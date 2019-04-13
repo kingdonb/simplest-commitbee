@@ -12,6 +12,7 @@ simplest-commitsto.json
 /test/tmp/
 /test/version_tmp/
 /tmp/
+/rspec.xml
 
 # Used by dotenv library to load environment variables.
 .env
