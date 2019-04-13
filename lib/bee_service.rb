@@ -15,12 +15,22 @@ class BeeService
     validate_json
   end
 
-  def already_logged_promise?(slug)
+  def seen_promise?(slug)
+    json_data
+    false
+  end
+
+  def seen_completed?(slug)
     # binding.pry
   end
 
-  def already_logged_completion?(slug)
-    # binding.pry
+  class NotImplementedYet < StandardError; end
+  def log_promise
+    raise NotImplementedYet
+  end
+
+  def log_completed
+    raise NotImplementedYet
   end
 
   private
