@@ -17,9 +17,9 @@ RUN echo "America/New_York" > /etc/timezone
 RUN unlink /etc/localtime
 RUN dpkg-reconfigure -f noninteractive tzdata
 
+RUN mkdir ${APPDIR}
+WORKDIR ${APPDIR}
 ## migrate the database
-# RUN mkdir ${APPDIR}
-# WORKDIR ${APPDIR}
 # COPY ${SCHEMA} /tmp/
 # RUN touch /tmp/${SCHEMA} && ex -c '1d2|$d|x' /tmp/${SCHEMA}
 # RUN sqlite3 ${STATE} < /tmp/${SCHEMA}
