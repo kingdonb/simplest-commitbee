@@ -7,7 +7,7 @@ ENV APPDIR="/home/${RVM_USER}/simplest-commitbee"
 
 # install 'ex' to do some manhandling of the schema file for loading
 RUN apt-get update && apt-get install -y --no-install-recommends \
-  vim-tiny && apt-get clean && rm -rf /var/lib/apt/lists/*
+  manpages vim-tiny && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # set the time zone
 ENV DEBIAN_FRONTEND=noninteractive
