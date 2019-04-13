@@ -1,6 +1,7 @@
 require "thor"
 require './lib/bee_service'
 require './lib/commit_service'
+require 'json'
 # require 'pry'
 
 class MyCLI < Thor
@@ -17,7 +18,8 @@ class MyCLI < Thor
     @commitsto = commitsto
     @beeminder = BeeService.new(
       username: env['BEEMINDER_USERNAME'],
-      access_token: env['BEE_AUTH_TOKEN'])
+      access_token: env['BEE_AUTH_TOKEN'],
+      json_data: File.read('simplest-commitsto.json') )
     super(args, opts, config)
   end
 

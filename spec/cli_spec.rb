@@ -22,10 +22,15 @@ RSpec.describe MyCLI, '#sync' do
       expect{subject.sync}.to_not raise_error
     end
     context "error conditions" do
-      it "aborts if simplest-commitsto.json shows a 404" do
-        pending "it has a 404 now, make it pass"
-        # binding.pry
-        pending "make the test pass"
+      it "aborts if simplest-commitsto.json shows any error" do
+        expect_any_instance_of(BeeService).to receive(:json_data).
+          and_return('{"error":"resource not found"}')
+        expect{subject.sync}.to raise_error(BeeService::JsonError, "resource not found")
+      end
+      it "aborts if simplest-commitsto.json shows a 404 status" do
+        expect_any_instance_of(BeeService).to receive(:json_data).
+        and_return('{"status":"404","error":"Not Found"}')
+        expect{subject.sync}.to raise_error(BeeService::JsonError, "404 Not Found")
       end
       it "aborts if simplest-commitsto.json doesn't appear to have been updated" do
         pending "need to fetch a good version first to see how this can be achieved"
