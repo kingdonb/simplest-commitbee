@@ -19,6 +19,8 @@ RSpec.describe MyCLI, '#sync' do
                               env:env ) }
 
     it "responds to the 'sync' command" do
+      expect_any_instance_of(BeeService).to receive(:json_data).
+        and_return('{}')
       expect{subject.sync}.to_not raise_error
     end
     context "error conditions" do
@@ -29,11 +31,15 @@ RSpec.describe MyCLI, '#sync' do
       end
       it "aborts if simplest-commitsto.json shows a 404 status" do
         expect_any_instance_of(BeeService).to receive(:json_data).
-        and_return('{"status":"404","error":"Not Found"}')
+          and_return('{"status":"404","error":"Not Found"}')
         expect{subject.sync}.to raise_error(BeeService::JsonError, "404 Not Found")
       end
       it "aborts if simplest-commitsto.json doesn't appear to have been updated" do
-        pending "need to fetch a good version first to see how this can be achieved"
+        expect_any_instance_of(BeeService).to receive(:json_data).
+          and_return('{}')
+        expect_any_instance_of(BeeService).to receive(:fresh_json_data?).
+          and_return false
+        expect{subject.sync}.to raise_error(BeeService::CurlError)
       end
     end
     context "regular operation" do

@@ -19,7 +19,7 @@ class MyCLI < Thor
     @beeminder = BeeService.new(
       username: env['BEEMINDER_USERNAME'],
       access_token: env['BEE_AUTH_TOKEN'],
-      json_data: File.read('simplest-commitsto.json') )
+      json_filename: 'simplest-commitsto.json' )
     super(args, opts, config)
   end
 
