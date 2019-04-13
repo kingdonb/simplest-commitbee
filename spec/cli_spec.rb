@@ -1,5 +1,4 @@
 require 'cli'
-# require 'pry'
 
 RSpec.describe MyCLI, '#sync' do
   let(:thor_config) { Marshal.load(
@@ -45,12 +44,7 @@ RSpec.describe MyCLI, '#sync' do
       end
     end
     context "regular operation" do
-      it "hits http://kb.commits.to/ and visits, adds each of the uncounted points" do
-        pending "verify simplest-commitsto.json first"
-      end
-      it "hits http://kb.commits.to/ again and noops when the data hasn't changed" do
-        pending "verify simplest-commitsto.json first"
-      end
+      # the regular operation of Sync is defined in the CommitService class
     end
   end
 end

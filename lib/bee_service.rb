@@ -1,3 +1,5 @@
+# require 'pry'
+
 class BeeService
   class JsonError < StandardError; end
   class CurlError < StandardError; end
@@ -10,6 +12,14 @@ class BeeService
     @json_data = File.read(json_filename)
 
     validate_json
+  end
+
+  def already_logged_promise?(slug)
+    # binding.pry
+  end
+
+  def already_logged_completion?(slug)
+    # binding.pry
   end
 
   private
@@ -34,7 +44,6 @@ class BeeService
     @json ||= JSON.parse(json_data)
   end
 
-  private
     # JSON is considered fresh if it has an mtime in 10 seconds recent history
     def fresh_json_data?
       mtime = File.mtime(json_filename)
