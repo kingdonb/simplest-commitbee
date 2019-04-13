@@ -38,5 +38,5 @@ RUN  bash --login -c 'bundle install'
 # include the app source code
 ADD .   ${APPDIR}
 # web.rb for default health checking on Proctype "cmd"
-CMD  bundle exec ruby ./web.rb
+CMD  bash --login -c 'bundle exec ruby ./web.rb'
 EXPOSE 5000
