@@ -1,7 +1,6 @@
 require "thor"
 require './lib/bee_service'
 require './lib/commit_service'
-require 'json'
 # require 'pry'
 
 class MyCLI < Thor

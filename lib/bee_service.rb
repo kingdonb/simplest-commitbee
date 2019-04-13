@@ -1,4 +1,5 @@
 # require 'pry'
+require 'json'
 
 class BeeService
   class JsonError < StandardError; end
