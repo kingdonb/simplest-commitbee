@@ -29,6 +29,7 @@ GEM
     optimist (3.0.0)
     sequel (5.19.0)
     sqlite3 (1.4.0)
+    thor (0.20.3)
     thread_safe (0.3.6)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
@@ -42,6 +43,7 @@ DEPENDENCIES
   beeminder!
   sequel
   sqlite3
+  thor
 
 RUBY VERSION
    ruby 2.6.2p47
