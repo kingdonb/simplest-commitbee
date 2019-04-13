@@ -21,6 +21,8 @@ RSpec.describe MyCLI, '#sync' do
     it "responds to the 'sync' command" do
       expect_any_instance_of(BeeService).to receive(:json_data).
         and_return('{}')
+      expect_any_instance_of(BeeService).to receive(:fresh_json_data?).
+        and_return true
       expect{subject.sync}.to_not raise_error
     end
     context "error conditions" do
