@@ -1,0 +1,12 @@
+:<<EOF
+sqlite> .schema
+CREATE TABLE items ( id integer NOT NULL PRIMARY KEY AUTOINCREMENT, 
+    name varchar(255),
+    price double precision);
+CREATE TABLE minutes ( timestamp INT, 
+    value DOUBLE,
+    comment STRING, 
+    id STRING,
+    updated_at INT,
+    requestid);
+EOF
