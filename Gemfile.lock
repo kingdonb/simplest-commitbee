@@ -27,7 +27,7 @@ GEM
     json (2.2.0)
     minitest (5.11.3)
     optimist (3.0.0)
-    sequel (5.18.0)
+    sequel (5.19.0)
     sqlite3 (1.4.0)
     thread_safe (0.3.6)
     tzinfo (1.2.5)
@@ -47,4 +47,4 @@ RUBY VERSION
    ruby 2.6.2p47
 
 BUNDLED WITH
-   1.17.2
+   1.17.3
