@@ -50,7 +50,7 @@ class BeeService
   end
 
   def log_to_beeminder(date, message, points)
-    cmd = "beemind -t #{access_token} -d '#{date}' simplest-commitsto #{points}"
+    cmd = "beemind -t #{access_token} -d '#{date}' simplest-commitsto #{points} '#{message}'"
     puts cmd.gsub(access_token, "[ACCESS_TOKEN]")
     `#{cmd}`
   end
