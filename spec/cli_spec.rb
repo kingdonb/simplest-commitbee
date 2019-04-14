@@ -45,11 +45,11 @@ RSpec.describe MyCLI, '#sync' do
       allow(subject.beeminder).to receive(:log_to_beeminder).
         with(Date.parse("2019-03-29"),
              "promise: why-is-the-facilities-api-taking-so-much-memory", 1)
-        .and_call_original
+        # .and_call_original
       allow(subject.beeminder).to receive(:log_to_beeminder).
         with(Date.parse("2018-10-09"),
              "promise: buildpacks/v3-get-started", 1)
-        .and_call_original
+        # .and_call_original
       expect{subject.sync}.to_not raise_error
     end
     context "error conditions" do
