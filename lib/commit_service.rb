@@ -58,7 +58,7 @@ class CommitService
 
     def all_completed_html_nodes
       promises.select do |s|
-        s.css(':has(.promise-card.completed)').present?
+        s.css(':has(.completed)').present?
       end
     end
 

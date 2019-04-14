@@ -14,9 +14,11 @@ class MyCLI < Thor
     @user.update(beeminder)
   end
 
-  def set_user(username:)
-    @user = commit_factory(username:username)
-  end
+  no_commands {
+    def set_user(username:)
+      @user = commit_factory(username:username)
+    end
+  }
 
   def initialize(args, opts, config, commitsto:CommitService, env:ENV)
     @commitsto = commitsto
