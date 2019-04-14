@@ -1,4 +1,5 @@
 require 'bee_service'
+# require 'pry'
 
 RSpec.describe BeeService do
   before do

@@ -17,7 +17,8 @@ class BeeService
 
   def seen_promise?(slug)
     json_data
-    false
+    # binding.pry
+    true
   end
 
   def seen_completed?(slug)
