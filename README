@@ -6,8 +6,7 @@ RU='rvm'
 RVM_ENVIR=/etc/profile.d/rvm.sh
 RUBY_VERS=`cat .ruby-version`
 
-# If this is a "do more" goal, then you must convert it to Custom and be sure
-# to manually disable the Beeminder API setting "goal_kyoom"
+# This should be a "do-more" goal with kyoom enabled (default settings)
    API="https://www.beeminder.com/api/v1"
   GOAL="simplest-commitsto"
   JSON="goals/$GOAL/datapoints.json"
@@ -21,9 +20,9 @@ $RU $RUBY_VERS
 $BE ruby ./cli sync
 
 # deis_token(){ cat ~/.deis/client.json |jq .token -r ; }
-# curl https://deis.xyz/v2/apps/simplest-commitsto/builds/ -H "Authorization: token $(deis_token)"
-# curl -X POST https://deis.team.hephy.rocks/v2/apps/simplest-commitsto/builds/ \
+# curl https://deis.xyz/v2/apps/simplest-commitbee/builds/ -H "Authorization: token $(deis_token)"
+# curl -X POST https://deis.team.hephy.rocks/v2/apps/simplest-commitbee/builds/ \
 #   -H "Authorization: token $(deis_token)" \
 #   -H "Content-Type: application/json" \
-#   -d '{ "image": "kingdonb/kate-ob-book:latest", "dockerfile": "false",
+#   -d '{ "image": "kingdonb/simplest-commitbee:latest", "dockerfile": "false",
 #         "procfile": { "cron": "./README; sleep $((15 * 60 * 4 * 4))" } }'
