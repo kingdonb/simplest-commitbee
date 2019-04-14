@@ -5,6 +5,22 @@ RSpec.describe MyCLI, '#sync' do
     "\x04\b{\b:\nshello:\x17Thor::Shell::Color\t:\n@base0:\n@muteF:\r@paddingi\x00:\x12@always_forceF:\x14current_commandS:\x12Thor::Command\v:\tnameI\"\tsync\x06:\x06EF:\x10descriptionI\"8add data points from COMMITSTO_USER (default: 'kb')\x06;\x0ET:\x15long_description0:\nusageI\"\x18sync COMMITSTO_USER\x06;\x0ET:\foptions{\x00:\x12ancestor_name0:\x14command_options@\v" ) }
   let(:args) { [] }
   let(:options) { [] }
+
+  let(:kb_commits_to_file) { File.new('spec/stubs/kb_commits_to.txt') }
+  let(:why_so_much_file)   { File.new('spec/stubs/why_so_much_memory.txt') }
+  let(:buildpacks_v3_file) { File.new('spec/stubs/buildpacks_v3.txt') }
+
+  before do
+    WebMock.disable_net_connect!
+    stub_request(:get, "http://kb.commits.to/").to_return(kb_commits_to_file)
+    stub_request(:get, "http://kb.commits.to/why-is-the-facilities-api-taking-so-much-memory").to_return(why_so_much_file)
+    stub_request(:get, "http://kb.commits.to/buildpacks/v3-get-started").to_return(buildpacks_v3_file)
+  end
+
+  after do
+    WebMock.allow_net_connect!
+  end
+
   context "with simplest-commitsto.json already fetched from Beeminder" do
 
     let(:commit_double) { CommitService }

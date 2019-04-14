@@ -1,0 +1,617 @@
+HTTP/1.1 200 OK
+Server: Cowboy
+Connection: keep-alive
+X-Powered-By: Express
+Content-Type: text/html; charset=utf-8
+Content-Length: 22159
+Etag: W/"568f-Jik1/WGf3MU1Lceeef1M8+VXhIA"
+Date: Sun, 14 Apr 2019 17:22:20 GMT
+Via: 1.1 vegur
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-121792102-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'UA-121792102-1');
+    </script>
+    <title>The I-Will System</title>
+
+    <meta name="description" content="commits.to | The I-Will System">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/main.css">
+    <link rel="stylesheet" href="/picker.css">
+    <link rel="stylesheet" href="https://unpkg.com/sweetalert2@7.12.15/dist/sweetalert2.min.css"/>
+    <link id="favicon" rel="icon" href="/favicon.png" type="image/png">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://unpkg.com/sweetalert2@7.12.15/dist/sweetalert2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.1/moment.min.js"></script>
+    <script>
+      // card
+      $(document).ready(function() {
+        $('.momentable').each(function() {
+          const $container = $(this)
+          const date = $container.attr('data-date')
+          const time = moment(date)
+          $(this).children('span').text(time.format('MMMM Do YYYY, h:mm:ss a'))
+          $container.addClass('momentable--visible')
+        })
+      })
+    
+      // promise
+      const swal = window.swal || {}
+    
+      const completePromiseText = {
+        title: 'Mark this promise completed?',
+        text: 'You can always edit this later.',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, complete it!',
+        cancelButtonText: 'No, cancel!',
+        useRejections: true,
+      }
+    
+      const deletePromiseText = {
+        title: 'Delete this promise?',
+        text: 'You won\'t be able to revert this!',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, cancel!',
+        useRejections: true,
+      }
+    
+      const parseHost = function() {
+        const host = window.location.hostname.split('.')
+        const hasSubdomain = host[2] && host[0] !== 'www'
+        console.log('parseHost', host, hasSubdomain)
+        return hasSubdomain
+      }
+    
+      const promisePath = function({ username, id }) {
+        const hasSubdomain = parseHost()
+        let path = '/'
+    
+        const urtext = id.slice(username.length + 1) // FIXME: when this is transpiled
+    
+        if (hasSubdomain) {
+          path += urtext
+        } else {
+          path += `/${username}.${window.location.host}/${urtext}`
+        }
+    
+        console.log('promisePath', path)
+        return path
+      }
+    
+      const apiPath = function({ action, username }) {
+        const hasSubdomain = parseHost()
+        const prefix = !hasSubdomain ? `/_s/${username}` : ''
+        return `${prefix}/promises/${action}`
+      }
+    
+      const fetchById = ({ action, id, username }) => fetch(
+        apiPath({ action, username }),
+        {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({ id }),
+        }
+      )
+    
+    
+      const completePromise = function(username, id) {
+        console.log('completePromise', id, username)
+    
+        swal(completePromiseText).then(function() {
+          fetchById({ action: 'complete', id, username }).then(function(response) {
+            if (response.ok) {
+              return swal(
+                'Completed!',
+                'Your promise has been fulfilled.',
+                'success'
+              ).then(function(result) {
+                if (result) {
+                  if (parseHost()) {
+                    window.location.reload()
+                  } else {
+                    window.location.replace(promisePath({ username, id }))
+                  }
+                }
+              })
+            }
+            throw new Error('Network response was not ok.')
+          })
+        })
+      }
+    
+      // the "action" field of the edit form is left blank until submission to
+      // protect against spam bot submissions
+      const editPromise = function() {
+        console.log('editPromise')
+        $('.edit-promise').attr('action', '/promises/edit')
+        $('.edit-promise').submit()
+      }
+    
+      const deletePromise = function(username, id) {
+        console.log('deletePromise', id, username)
+    
+        swal(deletePromiseText).then(function() {
+          fetchById({ action: 'remove', id, username }).then(function(response) {
+            if (response.ok) {
+              swal(
+                'Deleted!',
+                'Your promise has been deleted.',
+                'success',
+              ).then(function() {
+                window.location.href = '/' // redirect to subdomain root
+              })
+            }
+            throw new Error('Network response was not ok.')
+          })
+        })
+      }
+    </script>
+    <script src="/js/picker.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <h1>
+        <a href="//commits.to">
+          commits.to
+        </a>
+      </h1>
+      <nav>
+        <a class="button" target="_blank" href="https://blog.beeminder.com/will">blog post</a>
+        <a class="button" target="_blank" href="https://github.com/commitsto/commits.to">github repo</a>
+        <a class="button" target="_blank" href="https://github.com/commitsto/commits.to/wiki">spec</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="promise">
+  <div class="promise-card completed promise--status-red">
+    <div class="promise-header">
+      <h2 class="promise-user">
+        <a href="//kb.commits.to">
+          kb
+        </a>
+      </h2>
+      <div class="promise-user-score reliability--status-orange">
+        <span>89.5%</span>
+      </div>
+      <div class="counted-promises">
+        50
+        <span class="pending" >[+0]</span>
+      </div>
+    </div>
+
+    <div class="promise-info">
+      <div class="promise-details">
+        <a href="//kb.commits.to/buildpacks/v3-get-started">
+          <div class="promise-domain">
+            commits.to
+          </div>
+
+          <div class="promise-text">
+            Buildpacks v3 get started
+            <!--  by 2018-11-16 22:00:00 Fri (UTC+0000) -->
+          </div>
+
+            <small>
+              https://buildpacks.io/#get-started
+            </small>
+        </a>
+      </div>
+    </div>
+
+      <div class="promise-bar promise-bar--due">
+        <div class="promise-bar-date" style="opacity:.75">
+          <div class="relative-date">
+            5 months ago
+          </div>
+          <div class="momentable" data-date="Fri Nov 16 2018 22:00:00 GMT+0000 (UTC)">
+            <span><noscript>2018-11-16 22:00:00 Fri (UTC+0000)</noscript></span>
+          </div>
+        </div>
+      </div>
+  </div>
+
+  <div class="promise-footer">
+    <div class="promise-bar-wrapper">
+      <div style="width: 100%" >
+          <div class="credit--status credit--status-green">
+            <span class="promise-credit">100%</span>
+          </div>
+      </div>
+    </div>
+    <div class="promise-slug">
+      <a href="//kb.commits.to/buildpacks/v3-get-started">
+        buildpacks/v3-get-started
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="card-footer">
+  <!-- <a style="float:left" href="//kb.commits.to/buildpacks/v3-get-started#edit">
+    Edit
+  </a> -->
+
+  <small>
+      This promise has been viewed 93 times.
+  </small>
+
+  <a style="float:right" target="_blank" href="https://calendar.google.com/calendar/event?action&#x3D;TEMPLATE&amp;text&#x3D;kb%20commits%20to%20Buildpacks v3 get started&amp;details&#x3D;http://kb.commits.to/buildpacks/v3-get-started&amp;dates&#x3D;20181116T220000Z/20181116T220000Z">
+    Add to GCal
+  </a>
+</div>
+
+<div class="edit-wrapper">
+  <div class="create-promise blue-border">
+    <h1 class="promise-statement">
+      <span>kb</span> commits to
+      <span>Buildpacks v3 get started</span> by:
+      <span>2018-11-16 22:00:00 Fri (UTC+0000)</span>
+    </h1>
+  
+    <form action="" method="post" accept-charset="UTF-8" class="edit-promise" id="edit_kb/buildpacks/v3-get-started">
+      <div class="form-group-wrapper">
+        <label for="what">Title</label>
+        <input name="what" type="text" value="Buildpacks v3 get started">
+      </div>
+  
+      <div class="form-group-wrapper">
+        <label for="note">Details</label>
+        <textarea name="note" type="text">https://buildpacks.io/#get-started</textarea>
+      </div>
+  
+      <div class="form-group-wrapper">
+        <label for="void">void</label>
+        <select name="void">
+          <option value="false">false</option>
+          <option value="true" >true</option>
+        </select>
+      </div>
+  
+      <div class="form-group-wrapper">
+        <label for="tini">Commitment made (tini)</label>
+        <script>
+          $(document).ready(function() {
+            var timeMatch = /^((0?[1-9]|1[012])(:[0-5]\d){0,2}(\s?[AP]M))$|^([01]\d|2[0-3])(:[0-5]\d){0,2}$/i
+        
+            var $inputDate = $('#input_date-tini').pickadate();
+            var datePicker = $inputDate.pickadate('picker');
+        
+            var $inputTime = $('#input_time-tini').pickatime({
+              editable: true // FIXME not sure this is actually doing anything
+            });
+            var timePicker = $inputTime.pickatime('picker');
+        
+            var setDate = function() {
+              var value = moment($inputTextDate.val() + ' ' + $inputTextTime.val());
+              console.log('setDate', value)
+              $('#tini').val(value);
+            }
+        
+            var $inputTextDate = $('#input_date_text-tini').on({
+              change: parseDate,
+              focus: function() {
+                datePicker.open(false);
+              },
+              blur: function() {
+                datePicker.close();
+              }
+            });
+        
+            var $inputTextTime = $('#input_time_text-tini').on({
+              change: parseDate,
+              focus: function() {
+                // timePicker.open(false);
+              },
+              blur: function() {
+                // timePicker.close();
+                console.log('blur')
+                const inputDataValue = $('#input_time_text-tini').val();
+                if (inputDataValue && inputDataValue.trim().match(timeMatch)) {
+                  console.log('valid',  inputDataValue)
+                  $inputTextTime.removeClass('invalid');
+                  $inputTextTime.attr('data-value', inputDataValue.toUpperCase());
+                  setDate();
+                } else {
+                  $inputTextTime.addClass('invalid');
+                }
+              }
+            });
+        
+            var setTimeField = function(value) {
+              const inputValue = $inputTextTime.val(); //|| moment($inputTextTime.data('value')).format('hh:mm A');
+              console.log('set time', value, inputValue);
+              $inputTextTime.val(value);
+              setDate();
+            };
+        
+            var parseDate = function(value) {
+              if (!value) return;
+              // FIXME: handle timezones better
+              var parsedDate = moment(value);
+              // var userTimezoneOffset = date.getTimezoneOffset() * 60000;
+              // var parsedDate = new Date(date.getTime() + userTimezoneOffset);
+        
+              if (parsedDate) {
+                console.log('parseDate', value, parsedDate);
+                datePicker.set('select', new Date(value));
+                setTimeField(parsedDate.format('hh:mm A'));
+                $inputTextTime.val(parsedDate.format('hh:mm A'));
+              }
+            }
+        
+            datePicker.on('set', function() {
+              const value = this.get('value');
+              console.log('set date value', value);
+              console.log('set date val', $inputTextDate.val());
+              $inputTextDate.val(value);
+              setDate();
+            });
+        
+            parseDate($inputTextDate.attr('data-value')); // init with url value or default to tomorrow
+          });
+        </script>
+        
+        <div class="promise-picker">
+          <fieldset>
+            <input id="input_date-tini" type="text" class="time-input">
+            <input id="input_date_text-tini" type="text" data-value="Tue Oct 09 2018 00:08:00 GMT+0000 (UTC)" class="text-input" readonly>
+          </fieldset>
+        
+          <fieldset>
+            <input id="input_time_text-tini" type="text" data-value="Tue Oct 09 2018 00:08:00 GMT+0000 (UTC)" class="text-input">
+          </fieldset>
+        
+          <input id="tini" name="tini" type="hidden" value="Tue Oct 09 2018 00:08:00 GMT+0000 (UTC)">
+        </div>
+      </div>
+  
+      <div class="form-group-wrapper">
+        <label for="tdue">Commitment due (tdue)</label>
+        <script>
+          $(document).ready(function() {
+            var timeMatch = /^((0?[1-9]|1[012])(:[0-5]\d){0,2}(\s?[AP]M))$|^([01]\d|2[0-3])(:[0-5]\d){0,2}$/i
+        
+            var $inputDate = $('#input_date-tdue').pickadate();
+            var datePicker = $inputDate.pickadate('picker');
+        
+            var $inputTime = $('#input_time-tdue').pickatime({
+              editable: true // FIXME not sure this is actually doing anything
+            });
+            var timePicker = $inputTime.pickatime('picker');
+        
+            var setDate = function() {
+              var value = moment($inputTextDate.val() + ' ' + $inputTextTime.val());
+              console.log('setDate', value)
+              $('#tdue').val(value);
+            }
+        
+            var $inputTextDate = $('#input_date_text-tdue').on({
+              change: parseDate,
+              focus: function() {
+                datePicker.open(false);
+              },
+              blur: function() {
+                datePicker.close();
+              }
+            });
+        
+            var $inputTextTime = $('#input_time_text-tdue').on({
+              change: parseDate,
+              focus: function() {
+                // timePicker.open(false);
+              },
+              blur: function() {
+                // timePicker.close();
+                console.log('blur')
+                const inputDataValue = $('#input_time_text-tdue').val();
+                if (inputDataValue && inputDataValue.trim().match(timeMatch)) {
+                  console.log('valid',  inputDataValue)
+                  $inputTextTime.removeClass('invalid');
+                  $inputTextTime.attr('data-value', inputDataValue.toUpperCase());
+                  setDate();
+                } else {
+                  $inputTextTime.addClass('invalid');
+                }
+              }
+            });
+        
+            var setTimeField = function(value) {
+              const inputValue = $inputTextTime.val(); //|| moment($inputTextTime.data('value')).format('hh:mm A');
+              console.log('set time', value, inputValue);
+              $inputTextTime.val(value);
+              setDate();
+            };
+        
+            var parseDate = function(value) {
+              if (!value) return;
+              // FIXME: handle timezones better
+              var parsedDate = moment(value);
+              // var userTimezoneOffset = date.getTimezoneOffset() * 60000;
+              // var parsedDate = new Date(date.getTime() + userTimezoneOffset);
+        
+              if (parsedDate) {
+                console.log('parseDate', value, parsedDate);
+                datePicker.set('select', new Date(value));
+                setTimeField(parsedDate.format('hh:mm A'));
+                $inputTextTime.val(parsedDate.format('hh:mm A'));
+              }
+            }
+        
+            datePicker.on('set', function() {
+              const value = this.get('value');
+              console.log('set date value', value);
+              console.log('set date val', $inputTextDate.val());
+              $inputTextDate.val(value);
+              setDate();
+            });
+        
+            parseDate($inputTextDate.attr('data-value')); // init with url value or default to tomorrow
+          });
+        </script>
+        
+        <div class="promise-picker">
+          <fieldset>
+            <input id="input_date-tdue" type="text" class="time-input">
+            <input id="input_date_text-tdue" type="text" data-value="Fri Nov 16 2018 22:00:00 GMT+0000 (UTC)" class="text-input" readonly>
+          </fieldset>
+        
+          <fieldset>
+            <input id="input_time_text-tdue" type="text" data-value="Fri Nov 16 2018 22:00:00 GMT+0000 (UTC)" class="text-input">
+          </fieldset>
+        
+          <input id="tdue" name="tdue" type="hidden" value="Fri Nov 16 2018 22:00:00 GMT+0000 (UTC)">
+        </div>
+      </div>
+  
+      <div class="form-group-wrapper">
+        <label for="tfin">Commitment fulfilled (tfin)</label>
+        <script>
+          $(document).ready(function() {
+            var timeMatch = /^((0?[1-9]|1[012])(:[0-5]\d){0,2}(\s?[AP]M))$|^([01]\d|2[0-3])(:[0-5]\d){0,2}$/i
+        
+            var $inputDate = $('#input_date-tfin').pickadate();
+            var datePicker = $inputDate.pickadate('picker');
+        
+            var $inputTime = $('#input_time-tfin').pickatime({
+              editable: true // FIXME not sure this is actually doing anything
+            });
+            var timePicker = $inputTime.pickatime('picker');
+        
+            var setDate = function() {
+              var value = moment($inputTextDate.val() + ' ' + $inputTextTime.val());
+              console.log('setDate', value)
+              $('#tfin').val(value);
+            }
+        
+            var $inputTextDate = $('#input_date_text-tfin').on({
+              change: parseDate,
+              focus: function() {
+                datePicker.open(false);
+              },
+              blur: function() {
+                datePicker.close();
+              }
+            });
+        
+            var $inputTextTime = $('#input_time_text-tfin').on({
+              change: parseDate,
+              focus: function() {
+                // timePicker.open(false);
+              },
+              blur: function() {
+                // timePicker.close();
+                console.log('blur')
+                const inputDataValue = $('#input_time_text-tfin').val();
+                if (inputDataValue && inputDataValue.trim().match(timeMatch)) {
+                  console.log('valid',  inputDataValue)
+                  $inputTextTime.removeClass('invalid');
+                  $inputTextTime.attr('data-value', inputDataValue.toUpperCase());
+                  setDate();
+                } else {
+                  $inputTextTime.addClass('invalid');
+                }
+              }
+            });
+        
+            var setTimeField = function(value) {
+              const inputValue = $inputTextTime.val(); //|| moment($inputTextTime.data('value')).format('hh:mm A');
+              console.log('set time', value, inputValue);
+              $inputTextTime.val(value);
+              setDate();
+            };
+        
+            var parseDate = function(value) {
+              if (!value) return;
+              // FIXME: handle timezones better
+              var parsedDate = moment(value);
+              // var userTimezoneOffset = date.getTimezoneOffset() * 60000;
+              // var parsedDate = new Date(date.getTime() + userTimezoneOffset);
+        
+              if (parsedDate) {
+                console.log('parseDate', value, parsedDate);
+                datePicker.set('select', new Date(value));
+                setTimeField(parsedDate.format('hh:mm A'));
+                $inputTextTime.val(parsedDate.format('hh:mm A'));
+              }
+            }
+        
+            datePicker.on('set', function() {
+              const value = this.get('value');
+              console.log('set date value', value);
+              console.log('set date val', $inputTextDate.val());
+              $inputTextDate.val(value);
+              setDate();
+            });
+        
+            parseDate($inputTextDate.attr('data-value')); // init with url value or default to tomorrow
+          });
+        </script>
+        
+        <div class="promise-picker">
+          <fieldset>
+            <input id="input_date-tfin" type="text" class="time-input">
+            <input id="input_date_text-tfin" type="text" data-value="Tue Nov 13 2018 01:36:17 GMT+0000 (UTC)" class="text-input" readonly>
+          </fieldset>
+        
+          <fieldset>
+            <input id="input_time_text-tfin" type="text" data-value="Tue Nov 13 2018 01:36:17 GMT+0000 (UTC)" class="text-input">
+          </fieldset>
+        
+          <input id="tfin" name="tfin" type="hidden" value="Tue Nov 13 2018 01:36:17 GMT+0000 (UTC)">
+        </div>
+      </div>
+  
+  <!-- misleading to let people edit this until we support it
+      <div class="form-group-wrapper">
+        <label for="xfin">Fraction fulfilled</label>
+        <input name="xfin" type="text" value="1">
+      </div>
+  -->
+      <input type="hidden" name="id" value="kb/buildpacks/v3-get-started">
+      <input type="submit" class="promise-button" value="Save" onclick='editPromise()'>
+    </form>
+  </div>
+  
+  <div class="delete-promise">
+    <a class="delete-promise-button" href="#" onclick='deletePromise("kb", "kb/buildpacks/v3-get-started")'>
+      DELETE
+    </a>
+  </div>
+</div>
+
+    </main>
+
+    <footer>
+      <small>
+        Brought to you by the
+        <a target="_blank" href="https://www.beeminder.com" title="Reminders with a sting">Beeminder</a>
+        team and
+        <a target="_blank" href="http://chrisbutler.me">Chris Butler</a>.
+        <span style="float:right">&copy; 2017&ndash;2018</span>
+      </small>
+    </footer>
+  </body>
+</html>
