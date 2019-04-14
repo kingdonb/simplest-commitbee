@@ -57,9 +57,7 @@ class CommitService
     end
 
     def all_completed_html_nodes
-      promises.select do |s|
-        s.css(':has(.completed)').present?
-      end
+      promises.css(':has(.completed)')
     end
 
     def all_completed_slugs
