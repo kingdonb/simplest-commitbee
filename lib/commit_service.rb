@@ -57,8 +57,8 @@ class CommitService
     end
 
     def all_completed_html_nodes
-      promises.map do |s|
-        s.css(':has(.promise-card.completed)')
+      promises.select do |s|
+        s.css(':has(.promise-card.completed)').present?
       end
     end
 
@@ -108,7 +108,12 @@ class CommitService
       slugs = slug_nodes.map{|n| n.try(:text)&.strip}
 
       selected_nodes = this_page.css(selector)
-      selected_date = Date.parse(selected_nodes.first.attr(:value))
+
+      if selected_nodes.present?
+        selected_date = Date.parse(selected_nodes.first.attr(:value))
+      # else
+      #   binding.pry
+      end
 
       [slugs.first, selected_date]
     end

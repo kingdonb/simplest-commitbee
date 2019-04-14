@@ -35,13 +35,24 @@ class BeeService
     end
   end
 
-  class NotImplementedYet < StandardError; end
   def log_promise(tuple)
-    raise NotImplementedYet
+    comment = "promise: #{tuple[0]}"
+    date    = tuple[1]
+
+    log_to_beeminder(date, comment, 1)
   end
 
   def log_completed(tuple)
-    raise NotImplementedYet
+    comment = "success: #{tuple[0]}"
+    date    = tuple[1]
+
+    log_to_beeminder(date, comment, 1)
+  end
+
+  def log_to_beeminder(date, message, points)
+    cmd = "beemind -t #{access_token} -d '#{date}' simplest-commitsto #{points}"
+    puts cmd.gsub(access_token, "[ACCESS_TOKEN]")
+    `#{cmd}`
   end
 
   private

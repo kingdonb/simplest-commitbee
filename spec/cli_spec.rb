@@ -38,6 +38,18 @@ RSpec.describe MyCLI, '#sync' do
         and_return('{}')
       expect_any_instance_of(BeeService).to receive(:fresh_json_data?).
         and_return true
+
+      subject.set_user(username: 'kb')
+      allow(subject.user).to receive(:update).
+        with(subject.beeminder).and_call_original
+      allow(subject.beeminder).to receive(:log_to_beeminder).
+        with(Date.parse("2019-03-29"),
+             "promise: why-is-the-facilities-api-taking-so-much-memory", 1)
+        .and_call_original
+      allow(subject.beeminder).to receive(:log_to_beeminder).
+        with(Date.parse("2018-10-09"),
+             "promise: buildpacks/v3-get-started", 1)
+        .and_call_original
       expect{subject.sync}.to_not raise_error
     end
     context "error conditions" do

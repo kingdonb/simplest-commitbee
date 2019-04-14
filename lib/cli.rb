@@ -5,12 +5,17 @@ require './lib/commit_service'
 
 class MyCLI < Thor
   attr_reader :commitsto, :beeminder
+  attr_accessor :user
 
   desc "sync COMMITSTO_USER", "add data points from COMMITSTO_USER (default: 'kb')"
   def sync(name: "kb")
-    user = commit_factory(username:name)
+    @user ||= commit_factory(username:name)
 
-    user.update(beeminder)
+    @user.update(beeminder)
+  end
+
+  def set_user(username:)
+    @user = commit_factory(username:username)
   end
 
   def initialize(args, opts, config, commitsto:CommitService, env:ENV)
