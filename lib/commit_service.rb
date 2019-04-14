@@ -6,6 +6,7 @@ class CommitService
   attr_reader :username, :page, :bee
   def initialize(username)
     @username = username
+    @page = Nokogiri::HTML(RestClient.get("http://#{username}.commits.to"))
   end
   def update(bee)
     @bee = bee
@@ -15,10 +16,6 @@ class CommitService
   end
 
   private
-    def page
-      @page ||= Nokogiri::HTML(RestClient.get("http://#{username}.commits.to"))
-    end
-
     def promises_count
       page.css('.promise-details').count
     end
