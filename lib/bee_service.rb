@@ -23,12 +23,24 @@ class BeeService
     completed_slugs.include? slug
   end
 
+  def not_seen_promises(slug_arr)
+    slug_arr.reject do |slug|
+      promise_slugs.include? slug
+    end
+  end
+
+  def not_seen_completes(slug_arr)
+    slug_arr.reject do |slug|
+      completed_slugs.include? slug
+    end
+  end
+
   class NotImplementedYet < StandardError; end
-  def log_promise
+  def log_promise(tuple)
     raise NotImplementedYet
   end
 
-  def log_completed
+  def log_completed(tuple)
     raise NotImplementedYet
   end
 
