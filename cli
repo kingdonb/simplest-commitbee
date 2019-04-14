@@ -1,10 +1,6 @@
 #!/usr/bin/env ruby
 # credit to: whatisthor.com
 
-require "thor"
- 
-class MyCLI < Thor
-  # contents of the Thor class
-end
+require './lib/cli'
  
 MyCLI.start(ARGV)
