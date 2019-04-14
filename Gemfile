@@ -1,0 +1,15 @@
+source 'https://rubygems.org'
+ruby File.read('.ruby-version', mode: 'rb').chomp
+
+gem 'beeminder', git: 'git://github.com/beeminder/beeminder-gem.git'
+gem 'awesome_print', :require => 'ap'
+gem 'sequel'
+# gem 'sqlite3'
+gem 'activesupport', '< 6.0'
+gem 'thor'
+gem 'rspec', '~> 3.0'
+gem 'rspec_junit_formatter'
+gem 'nokogiri'
+gem 'rest-client'
+gem 'webmock'
+# gem 'pry'

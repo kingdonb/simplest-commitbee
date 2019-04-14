@@ -1,0 +1,358 @@
+HTTP/1.1 200 OK
+Server: Cowboy
+Connection: keep-alive
+X-Powered-By: Express
+Content-Type: text/html; charset=utf-8
+Content-Length: 100876
+Etag: W/"18a0c-1VTVzE9mH1e4p3prVUCFsUgSj4A"
+Date: Sun, 14 Apr 2019 17:16:38 GMT
+Via: 1.1 vegur
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-121792102-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'UA-121792102-1');
+    </script>
+    <title>The I-Will System</title>
+
+    <meta name="description" content="commits.to | The I-Will System">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/main.css">
+    <link rel="stylesheet" href="/picker.css">
+    <link rel="stylesheet" href="https://unpkg.com/sweetalert2@7.12.15/dist/sweetalert2.min.css"/>
+    <link id="favicon" rel="icon" href="/favicon.png" type="image/png">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://unpkg.com/sweetalert2@7.12.15/dist/sweetalert2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.1/moment.min.js"></script>
+    <script>
+      // card
+      $(document).ready(function() {
+        $('.momentable').each(function() {
+          const $container = $(this)
+          const date = $container.attr('data-date')
+          const time = moment(date)
+          $(this).children('span').text(time.format('MMMM Do YYYY, h:mm:ss a'))
+          $container.addClass('momentable--visible')
+        })
+      })
+    
+      // promise
+      const swal = window.swal || {}
+    
+      const completePromiseText = {
+        title: 'Mark this promise completed?',
+        text: 'You can always edit this later.',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, complete it!',
+        cancelButtonText: 'No, cancel!',
+        useRejections: true,
+      }
+    
+      const deletePromiseText = {
+        title: 'Delete this promise?',
+        text: 'You won\'t be able to revert this!',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, cancel!',
+        useRejections: true,
+      }
+    
+      const parseHost = function() {
+        const host = window.location.hostname.split('.')
+        const hasSubdomain = host[2] && host[0] !== 'www'
+        console.log('parseHost', host, hasSubdomain)
+        return hasSubdomain
+      }
+    
+      const promisePath = function({ username, id }) {
+        const hasSubdomain = parseHost()
+        let path = '/'
+    
+        const urtext = id.slice(username.length + 1) // FIXME: when this is transpiled
+    
+        if (hasSubdomain) {
+          path += urtext
+        } else {
+          path += `/${username}.${window.location.host}/${urtext}`
+        }
+    
+        console.log('promisePath', path)
+        return path
+      }
+    
+      const apiPath = function({ action, username }) {
+        const hasSubdomain = parseHost()
+        const prefix = !hasSubdomain ? `/_s/${username}` : ''
+        return `${prefix}/promises/${action}`
+      }
+    
+      const fetchById = ({ action, id, username }) => fetch(
+        apiPath({ action, username }),
+        {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({ id }),
+        }
+      )
+    
+    
+      const completePromise = function(username, id) {
+        console.log('completePromise', id, username)
+    
+        swal(completePromiseText).then(function() {
+          fetchById({ action: 'complete', id, username }).then(function(response) {
+            if (response.ok) {
+              return swal(
+                'Completed!',
+                'Your promise has been fulfilled.',
+                'success'
+              ).then(function(result) {
+                if (result) {
+                  if (parseHost()) {
+                    window.location.reload()
+                  } else {
+                    window.location.replace(promisePath({ username, id }))
+                  }
+                }
+              })
+            }
+            throw new Error('Network response was not ok.')
+          })
+        })
+      }
+    
+      // the "action" field of the edit form is left blank until submission to
+      // protect against spam bot submissions
+      const editPromise = function() {
+        console.log('editPromise')
+        $('.edit-promise').attr('action', '/promises/edit')
+        $('.edit-promise').submit()
+      }
+    
+      const deletePromise = function(username, id) {
+        console.log('deletePromise', id, username)
+    
+        swal(deletePromiseText).then(function() {
+          fetchById({ action: 'remove', id, username }).then(function(response) {
+            if (response.ok) {
+              swal(
+                'Deleted!',
+                'Your promise has been deleted.',
+                'success',
+              ).then(function() {
+                window.location.href = '/' // redirect to subdomain root
+              })
+            }
+            throw new Error('Network response was not ok.')
+          })
+        })
+      }
+    </script>
+    <script src="/js/picker.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <h1>
+        <a href="//commits.to">
+          commits.to
+        </a>
+      </h1>
+      <nav>
+        <a class="button" target="_blank" href="https://blog.beeminder.com/will">blog post</a>
+        <a class="button" target="_blank" href="https://github.com/commitsto/commits.to">github repo</a>
+        <a class="button" target="_blank" href="https://github.com/commitsto/commits.to/wiki">spec</a>
+      </nav>
+    </header>
+
+    <main>
+       <div class="user-promises-list blue-border">
+  <h2 class="user-header credit--status-orange">
+    <a class="user-name" href="//kb.commits.to">
+      kb
+    </a>
+    <span class="user-reliability">
+      89.503%
+      <span>
+        50
+        <span class="pending" >[+0]</span>
+      </span>
+    </span>
+  </h2>
+  <ul class="promises-list">
+      <li><section class="promise">
+  <div class="promise-card  promise--status-red">
+    <div class="promise-header">
+      <h2 class="promise-user">
+        <a href="//kb.commits.to">
+          kb
+        </a>
+      </h2>
+      <div class="promise-user-score reliability--status-orange">
+        <span>89.5%</span>
+      </div>
+      <div class="counted-promises">
+        50
+        <span class="pending" >[+0]</span>
+      </div>
+    </div>
+
+    <div class="promise-info">
+      <div class="promise-details">
+        <a href="//kb.commits.to/why-is-the-facilities-api-taking-so-much-memory">
+          <div class="promise-domain">
+            commits.to
+          </div>
+
+          <div class="promise-text">
+            Why is the facilities api taking so much memory
+            <!--  by 2019-04-10 21:00:00 Wed (UTC+0000) -->
+          </div>
+
+            <small>
+              17722 deploy     20   0 1551M 1079M 14752 S  0.0 13.7  1h00:02 unicorn worker[1] -E staging -c /apps/facilities-api/config/unicorn.rb -D
+
+  17723 deploy     20   0 1471M 1004M 19332 S  0.0 12.7 59:47.11 unicorn worker[2] -E staging -c /apps/facilities-api/config/unicorn.rb -D
+
+  17721 deploy     20   0 1467M 1000M 19336 S  0.0 12.7 59:50.48 unicorn worker[0] -E staging -c /apps/facilities-api/config/unicorn.rb -D
+
+  17724 deploy     20   0 1441M  973M 19356 S  0.0 12.4  1h00:41 unicorn worker[3] -E staging -c /apps/facilities-api/config/unicorn.rb -D
+            </small>
+        </a>
+      </div>
+    </div>
+
+      <div class="promise-bar promise-bar--due">
+        <div class="promise-bar-date" style="opacity:.75">
+          <div class="relative-date">
+            4 days ago
+          </div>
+          <div class="momentable" data-date="Wed Apr 10 2019 21:00:00 GMT+0000 (UTC)">
+            <span><noscript>2019-04-10 21:00:00 Wed (UTC+0000)</noscript></span>
+          </div>
+        </div>
+      </div>
+  </div>
+
+  <div class="promise-footer">
+    <div class="promise-bar-wrapper">
+      <div style="width: 91.9%" >
+          <div class="promise-bar promise-bar--bottom">
+            <div class="bar-button-action">
+                <a href="#"
+                  class="promise-bar-link promise--status-red"
+                  onclick='completePromise("kb", "kb/why-is-the-facilities-api-taking-so-much-memory")'
+                  title="Mark 91.9% Complete">
+                  <span>Mark 91.9% Complete</span>
+                </a>
+            </div>
+          </div>
+      </div>
+    </div>
+    <div class="promise-slug">
+      <a href="//kb.commits.to/why-is-the-facilities-api-taking-so-much-memory">
+        why-is-the-facilities-api-taking-so-much-memory
+      </a>
+    </div>
+  </div>
+</section>
+</li>
+      <li><section class="promise">
+  <div class="promise-card completed promise--status-red">
+    <div class="promise-header">
+      <h2 class="promise-user">
+        <a href="//kb.commits.to">
+          kb
+        </a>
+      </h2>
+      <div class="promise-user-score reliability--status-orange">
+        <span>89.5%</span>
+      </div>
+      <div class="counted-promises">
+        50
+        <span class="pending" >[+0]</span>
+      </div>
+    </div>
+
+    <div class="promise-info">
+      <div class="promise-details">
+        <a href="//kb.commits.to/buildpacks/v3-get-started">
+          <div class="promise-domain">
+            commits.to
+          </div>
+
+          <div class="promise-text">
+            Buildpacks v3 get started
+            <!--  by 2018-11-16 22:00:00 Fri (UTC+0000) -->
+          </div>
+
+            <small>
+              https://buildpacks.io/#get-started
+            </small>
+        </a>
+      </div>
+    </div>
+
+      <div class="promise-bar promise-bar--due">
+        <div class="promise-bar-date" style="opacity:.75">
+          <div class="relative-date">
+            5 months ago
+          </div>
+          <div class="momentable" data-date="Fri Nov 16 2018 22:00:00 GMT+0000 (UTC)">
+            <span><noscript>2018-11-16 22:00:00 Fri (UTC+0000)</noscript></span>
+          </div>
+        </div>
+      </div>
+  </div>
+
+  <div class="promise-footer">
+    <div class="promise-bar-wrapper">
+      <div style="width: 100%" >
+          <div class="credit--status credit--status-green">
+            <span class="promise-credit">100%</span>
+          </div>
+      </div>
+    </div>
+    <div class="promise-slug">
+      <a href="//kb.commits.to/buildpacks/v3-get-started">
+        buildpacks/v3-get-started
+      </a>
+    </div>
+  </div>
+</section>
+</li>
+  </ul>
+</ul>
+
+    </main>
+
+    <footer>
+      <small>
+        Brought to you by the
+        <a target="_blank" href="https://www.beeminder.com" title="Reminders with a sting">Beeminder</a>
+        team and
+        <a target="_blank" href="http://chrisbutler.me">Chris Butler</a>.
+        <span style="float:right">&copy; 2017&ndash;2018</span>
+      </small>
+    </footer>
+  </body>
+</html>
