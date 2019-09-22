@@ -18,8 +18,8 @@ GEM
       i18n (>= 0.7, < 2)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
-    addressable (2.6.0)
-      public_suffix (>= 2.0.2, < 4.0)
+    addressable (2.7.0)
+      public_suffix (>= 2.0.2, < 5.0)
     awesome_print (1.8.0)
     chronic (0.10.2)
     concurrent-ruby (1.1.5)
@@ -36,16 +36,16 @@ GEM
     i18n (1.6.0)
       concurrent-ruby (~> 1.0)
     json (2.2.0)
-    mime-types (3.2.2)
+    mime-types (3.3)
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2019.0331)
+    mime-types-data (3.2019.0904)
     mini_portile2 (2.4.0)
     minitest (5.11.3)
     netrc (0.11.0)
     nokogiri (1.10.4)
       mini_portile2 (~> 2.4.0)
     optimist (3.0.0)
-    public_suffix (3.1.1)
+    public_suffix (4.0.1)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
       http-cookie (>= 1.0.2, < 2.0)
@@ -67,7 +67,7 @@ GEM
     rspec_junit_formatter (0.4.1)
       rspec-core (>= 2, < 4, != 2.12.0)
     safe_yaml (1.0.5)
-    sequel (5.23.0)
+    sequel (5.24.0)
     thor (0.20.3)
     thread_safe (0.3.6)
     tzinfo (1.2.5)
@@ -75,7 +75,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.6)
-    webmock (3.7.0)
+    webmock (3.7.5)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
@@ -96,7 +96,7 @@ DEPENDENCIES
   webmock
 
 RUBY VERSION
-   ruby 2.6.3p62
+   ruby 2.6.4p104
 
 BUNDLED WITH
    1.17.3
