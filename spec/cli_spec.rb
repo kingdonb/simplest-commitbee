@@ -23,7 +23,7 @@ RSpec.describe MyCLI, '#sync' do
 
   context "with simplest-commitsto.json already fetched from Beeminder" do
 
-    let(:commit_double) { CommitService }
+    let(:commit_double) { CommitServiceV1 }
     let(:env) {
       {'BEEMINDER_USERNAME' => 'dreev',
        'BEE_AUTH_TOKEN' => 'NoAuthTokenHere'}

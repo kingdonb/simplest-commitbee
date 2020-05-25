@@ -4,7 +4,7 @@ require 'restclient'
 require 'active_support'
 require 'active_support/core_ext'
 
-class CommitService
+class CommitServiceV1
   attr_reader :username, :page, :bee
   def initialize(username)
     @username = username

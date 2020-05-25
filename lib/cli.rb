@@ -1,6 +1,6 @@
 require "thor"
 require './lib/bee_service'
-require './lib/commit_service'
+require './lib/commit_service_v2'
 # require 'pry'
 
 class MyCLI < Thor
@@ -20,7 +20,7 @@ class MyCLI < Thor
     end
   }
 
-  def initialize(args, opts, config, commitsto:CommitService, env:ENV)
+  def initialize(args, opts, config, commitsto:CommitServiceV2, env:ENV)
     @commitsto = commitsto
     @beeminder = BeeService.new(
       username: env['BEEMINDER_USERNAME'],
