@@ -54,7 +54,7 @@ class CommitServiceV2
     end
 
     def all_completed_promises
-      promises.select{ |p| p['tfin'].present? }
+      promises.select{ |p| p['tfin'].present? }.first
     end
 
     def all_completed_slugs
@@ -71,7 +71,7 @@ class CommitServiceV2
       not_seen = bee.not_seen_promises(all_promise_slugs)
 
       not_seen.map do |p_slug|
-        p = all_promises.select{ |pro| pro['slug'] == p_slug }
+        p = all_promises.select{ |pro| pro['slug'] == p_slug }.first
         promise_to_slug_and_created_at_tuple(p)
       end
     end
