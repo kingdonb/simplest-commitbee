@@ -1,6 +1,6 @@
-require 'commit_service'
+require 'commit_service_v1'
 
-RSpec.describe CommitService, '#update' do
+RSpec.describe CommitServiceV1, '#update' do
   context 'with help from the BeeService class' do
     context 'a new promise is detected' do
       it "gets the timestamp when a new promise is observed" do
