@@ -1,14 +1,14 @@
-require 'nokogiri'
+require 'json'
 require 'restclient'
 # require 'pry'
 require 'active_support'
 require 'active_support/core_ext'
 
 class CommitServiceV2
-  attr_reader :username, :page, :bee
+  attr_reader :username, :data, :bee
   def initialize(username)
     @username = username
-    @page = Nokogiri::HTML(RestClient.get(root_url))
+    @data = JSON.parse(RestClient.get(promises_url))
   end
   def update(bee)
     @bee = bee
@@ -18,103 +18,91 @@ class CommitServiceV2
   end
 
   private
-    # def root_url
-    #   "http://#{username}.commits.to/"
-    # end
+    def promises_url
+      "http://commits.to/api/v1/user/promises?username=#{username}"
+    end
 
-    # def slug_url(slug)
-    #   root_url + slug
-    # end
+    def promises
+      data['promises']
+    end
 
-    # def promises
-    #   page.css('ul.promises-list section.promise')
-    # end
-
-    # def promises_count
-    #   promises.count
-    # end
+  # # Useful for debugging, but not called by any other client function
+  #   # def promises_count
+  #   #   promises.count
+  #   # end
 
     def add_any_untracked_promises
-      all_unlogged_promises_slug_and_created_at.each do |t|
+      slug_and_created_at_for_promises_not_seen_before.each do |t|
         bee.log_promise(t)
       end
     end
 
     def add_any_newly_completed_promises
-      all_unlogged_fulfills_slug_and_tfin.each do |t|
+      slug_and_tfin_for_promises_fulfilled_not_logged_already.each do |t|
         bee.log_completed(t)
       end
     end
 
-    # def all_promises_sections
-    #   promises
-    # end
+    def all_promises
+      promises
+    end
 
-    # def all_promise_slugs
-    #   all_promises_sections.map do |p|
-    #     slug_from(p)
-    #   end
-    # end
+    def all_promise_slugs
+      all_promises.map do |p|
+        slug_from(p)
+      end
+    end
 
-    # def all_completed_html_nodes
-    #   promises.css(':has(.completed)')
-    # end
+    def all_completed_promises
+      promises.select{ |p| p['tfin'].present? }
+    end
 
-    # def all_completed_slugs
-    #   all_completed_html_nodes.map do |p|
-    #     slug_from(p)
-    #   end
-    # end
+    def all_completed_slugs
+      all_completed_promises.map do |p|
+        slug_from(p)
+      end
+    end
 
-    # def slug_from(promise)
-    #   promise.css('div.promise-slug').text.strip
-    # end
+    def slug_from(promise)
+      promise['slug']
+    end
 
-    # def all_unlogged_promises_slug_and_created_at
-    #   urls_to_visit =
-    #     bee.not_seen_promises(all_promise_slugs).
-    #     map { |slug| slug_url(slug) }
+    def slug_and_created_at_for_promises_not_seen_before
+      not_seen = bee.not_seen_promises(all_promise_slugs)
 
-    #   urls_to_visit.map do |u|
-    #     promise_url_to_slug_and_created_at_tuple(u)
-    #   end
-    # end
+      not_seen.map do |p_slug|
+        p = all_promises.select{ |pro| pro['slug'] == p_slug }.first
+        promise_to_slug_and_created_at_tuple(p)
+      end
+    end
 
-    # def all_unlogged_fulfills_slug_and_tfin
-    #   urls_to_visit =
-    #     bee.not_seen_completes(all_completed_slugs).
-    #     map { |slug| slug_url(slug) }
+    def slug_and_tfin_for_promises_fulfilled_not_logged_already
+      newly_complete = bee.not_seen_completes(all_completed_slugs)
 
-    #   urls_to_visit.map do |u|
-    #     promise_url_to_slug_and_tfin_tuple(u)
-    #   end
-    # end
+      newly_complete.map do |c_slug|
+        c = all_completed_promises.select{ |pro| pro['slug'] == c_slug }.first
+        promise_to_slug_and_tfin_tuple(c)
+      end
+    end
 
-    # def promise_url_to_slug_and_created_at_tuple(url)
-    #   promise_url_to_slug_and_date_selector_value_tuple(url, 'input#tini')
-    # end
+    def promise_to_slug_and_created_at_tuple(promise)
+      promise_to_slug_and_date_field_value_tuple(promise, 'tini')
+    end
 
-    # def promise_url_to_slug_and_tfin_tuple(url)
-    #   promise_url_to_slug_and_date_selector_value_tuple(url, 'input#tfin')
-    # end
+    def promise_to_slug_and_tfin_tuple(promise)
+      promise_to_slug_and_date_field_value_tuple(promise, 'tfin')
+    end
 
-    # def promise_url_to_slug_and_date_selector_value_tuple(url, selector)
-    #   this_page = Nokogiri::HTML(RestClient.get(url))
-    #   node = this_page.css(selector)
+    def promise_to_slug_and_date_field_value_tuple(promise, selector)
+      selected_date = promise[selector]
+      if selected_date.present?
+        selected_date = Date.parse(selected_date)
+      # else
+      #   binding.pry
+      end
 
-    #   slug_nodes = this_page.css('.promise-slug a')
-    #   slugs = slug_nodes.map{|n| n.try(:text)&.strip}
-
-    #   selected_nodes = this_page.css(selector)
-
-    #   if selected_nodes.present?
-    #     selected_date = Date.parse(selected_nodes.first.attr(:value))
-    #   # else
-    #   #   binding.pry
-    #   end
-
-    #   [slugs.first, selected_date]
-    # end
+      [slug_from(promise), selected_date]
+    end
 
   #
 end
