@@ -90,7 +90,7 @@ class CommitServiceV2
     end
 
     def promise_to_slug_and_tfin_tuple(promise)
-      promise_to_slug_and_date_selector_value_tuple(promise, 'tfin')
+      promise_to_slug_and_date_field_value_tuple(promise, 'tfin')
     end
 
     def promise_to_slug_and_date_field_value_tuple(promise, selector)
