@@ -1,6 +1,6 @@
-ARG RVM_RUBY_VERSIONS="2.6.0 2.6.1 2.6.2 2.6.3 2.6.4 2.6.5 2.6.6"
+ARG RVM_RUBY_VERSIONS="2.7.4"
 FROM kingdonb/docker-rvm
-LABEL maintainer="Kingdon Barrett <kingdon.b@nd.edu>"
+LABEL maintainer="Kingdon Barrett <kingdon@weave.works>"
 ENV APPDIR="/home/${RVM_USER}/simplest-commitbee"
 # ENV SCHEMA="sqlite.schema"
 # ENV STATE="beegraph.sqlite"
@@ -29,7 +29,7 @@ WORKDIR ${APPDIR}
 # RVM_USER is permitted to create files
 RUN chown ${RVM_USER} ${APPDIR}
 USER ${RVM_USER}
-ENV RUBY=2.6.6
+ENV RUBY=2.7.4
 
 # include the ruby-version and Gemfile for bundle install
 ADD Gemfile Gemfile.lock .ruby-version ${APPDIR}/
