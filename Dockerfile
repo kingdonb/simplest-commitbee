@@ -1,4 +1,4 @@
-ARG RVM_RUBY_VERSIONS="2.7.4"
+ARG RVM_RUBY_VERSIONS="2.7.5"
 FROM kingdonb/docker-rvm
 LABEL maintainer="Kingdon Barrett <kingdon@weave.works>"
 ENV APPDIR="/home/${RVM_USER}/simplest-commitbee"
@@ -29,7 +29,7 @@ WORKDIR ${APPDIR}
 # RVM_USER is permitted to create files
 RUN chown ${RVM_USER} ${APPDIR}
 USER ${RVM_USER}
-ENV RUBY=2.7.4
+ENV RUBY=2.7.5
 
 # include the ruby-version and Gemfile for bundle install
 ADD Gemfile Gemfile.lock .ruby-version ${APPDIR}/
