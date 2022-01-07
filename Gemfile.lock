@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/beeminder/beeminder-gem.git
+  remote: https://github.com/beeminder/beeminder-gem.git
   revision: 77b80ff036dec84e034bc107a076788c537c7b45
   specs:
     beeminder (0.2.12)
@@ -35,7 +35,7 @@ GEM
       domain_name (~> 0.5)
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
-    json (2.5.1)
+    json (2.6.1)
     mime-types (3.3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2021.0901)
@@ -92,7 +92,7 @@ DEPENDENCIES
   webmock
 
 RUBY VERSION
-   ruby 2.7.4p191
+   ruby 2.7.5p203
 
 BUNDLED WITH
-   2.1.4
+   2.2.33
