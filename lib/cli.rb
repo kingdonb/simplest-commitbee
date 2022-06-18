@@ -33,10 +33,9 @@ class MyCLI < Thor
 
   def initialize(args, opts, config, commitsto:CommitServiceV2, env:ENV)
     @commitsto = commitsto
-    @beeminder = BeeService.new(
-      username: env['BEEMINDER_USERNAME'],
-      access_token: env['BEE_AUTH_TOKEN'],
-      json_filename: 'simplest-commitsto.json' )
+    @beeminder = nil
+    @username = env['BEEMINDER_USERNAME']
+    @token = env['BEE_AUTH_TOKEN']
     super(args, opts, config)
   end
 
@@ -45,8 +44,16 @@ class MyCLI < Thor
       commitsto.new(username)
     end
 
+    def init_bee
+      @beeminder = BeeService.new(
+        username: @username,
+        access_token: @token,
+        json_filename: 'simplest-commitsto.json' )
+    end
+
     def do_update
       `./README`
+      init_bee
       @user.update(beeminder)
     end
 
