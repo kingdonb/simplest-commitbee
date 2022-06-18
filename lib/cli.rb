@@ -1,9 +1,10 @@
 require 'bundler/setup'
-# require 'libev_scheduler'
+require 'libev_scheduler'
 require "thor"
 # require 'tty-command'
 # require 'byebug'
 # require "ostruct"
+# require 'faraday'
 require './lib/bee_service'
 require './lib/commit_service_v2'
 require 'active_support'
@@ -19,27 +20,22 @@ class MyCLI < Thor
     @user ||= commit_factory(username:name)
     $stdout.sync = true
 
-    # puts "Setting scheduler to Libev"
-    puts "(lazy scheduler, quits when sleep period is over)"
+    puts "Setting scheduler to Libev"
+    # puts "(lazy scheduler, quits when sleep period is over)"
 
-    # Fiber.set_scheduler Libev::Scheduler.new
-    # Fiber.schedule do
-      puts "scheduled activity"
-      # loop do
-        puts "looping again"
-        do_update
+    puts "scheduled activity"
+    do_update
+      puts "looping again"
+      Fiber.schedule do
         puts "ran the updater, sleeping now"
         t0 = Time.now
 
-        sleep 100 # 4*60*60
+        sleep 15 # 4*60*60
         puts "woke up after #{Time.now - t0} seconds"
-      # end
+        self.sync # calling sync again
+      end
 
-      # Fiber should never finish
-      puts "Fiber finished at #{Time.now}"
-    # end
-
-    puts "scheduled"
+      puts "Fiber scheduled at #{Time.now}"
   end
 
   no_commands {
@@ -83,34 +79,36 @@ class MyCLI < Thor
     end
 
     def do_update
-      begin
-        api="https://www.beeminder.com/api/v1"
-        goal="simplest-commitsto"
-        json="goals/#{goal}/datapoints.json"
-        username="#{@username}"
-        token="auth_token=#{@token}"
+      ## begin
+      #  api="https://www.beeminder.com/api/v1"
+      #  goal="simplest-commitsto"
+      #  json="goals/#{goal}/datapoints.json"
+      #  username="#{@username}"
+      #  # token="auth_token=#{@token}"
 
-        uristr = "#{api}/users/#{username}/#{json}?#{token}"
-        uri = URI.parse(uristr)
-        response = Net::HTTP.get_response(uri)
-        puts "response is fetched"
-        # response = OpenStruct.new(body: "foo")
+      #  uristr = "#{api}/users/#{username}/#{json}"
+      #  response = Faraday.get(uristr, {auth_token: @token}, {'Accept' => 'application/json'})
+      #  puts "response is fetched"
+      #  # response = OpenStruct.new(body: "foo")
 
-        File.open("#{goal}.json", 'w') do |file|
-          file.write(response.body)
-        end
+      #  File.open("#{goal}.json", 'w') do |file|
+      #    file.write(response.body)
+      #  end
 
-        puts "Wrote #{goal}.json"
+      #  puts "Wrote #{goal}.json"
 
-        # show_errors!(err: cmd.err, status: cmd.status)
-      end
-      # puts cmd.out
+      #  # show_errors!(err: cmd.err, status: cmd.status)
+      ## end
+      ## puts cmd.out
+
+      `./README`
 
       init_bee
       @user.update(beeminder)
     end
 
     def self.start(args)
+      Fiber.set_scheduler Libev::Scheduler.new
       super(args)
     end
   #

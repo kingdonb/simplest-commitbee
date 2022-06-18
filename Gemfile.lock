@@ -37,6 +37,7 @@ GEM
     i18n (1.10.0)
       concurrent-ruby (~> 1.0)
     json (2.6.1)
+    libev_scheduler (0.2)
     mime-types (3.4.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2022.0105)
@@ -86,6 +87,7 @@ DEPENDENCIES
   activesupport (~> 6.0)
   awesome_print
   beeminder!
+  libev_scheduler
   rest-client
   rspec (~> 3.0)
   rspec_junit_formatter
