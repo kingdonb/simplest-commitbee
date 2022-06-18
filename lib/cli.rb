@@ -32,8 +32,9 @@ class MyCLI < Thor
     Fiber.schedule do
       loop do
         t0 = Time.now
-        sleep 60 # * 60
-        puts "heartbeat every #{(Time.now - t0) / 60.0} minute(s)"
+        sleep 60 * 60
+        how_long = (Time.now - t0) / 60.0
+        puts "heartbeat every #{how_long.round}m"
       end
     end
 
