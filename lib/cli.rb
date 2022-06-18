@@ -11,7 +11,7 @@ class MyCLI < Thor
   def sync(name: "kb")
     @user ||= commit_factory(username:name)
 
-    Fiber.set_scheduler Libev::Scheduler.new
+    Fiber.set_scheduler ::Libev::Scheduler.new
     Fiber.schedule do
       while do_update
         puts "ran the update, sleeping now"
