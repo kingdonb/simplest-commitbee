@@ -19,9 +19,11 @@ class MyCLI < Thor
     $stdout.sync = true
     puts "Setting scheduler to Libev"
 
-    Fiber.set_scheduler ::Libev::Scheduler.new
+    Fiber.set_scheduler Libev::Scheduler.new
     Fiber.schedule do
+      puts "scheduled activity"
       loop do
+        puts "looping again"
         do_update
         puts "ran the updater, sleeping now"
         $stdout.flush
@@ -36,6 +38,7 @@ class MyCLI < Thor
       puts "Fiber finished at #{Time.now}"
     end
 
+    puts "scheduled"
   end
 
   no_commands {
