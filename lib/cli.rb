@@ -24,7 +24,7 @@ class MyCLI < Thor
         puts "ran the updater, sleeping now"
         t0 = Time.now
 
-        sleep 14400 # 4*60*60
+        sleep 40 # 4*60*60
         puts "woke up after #{Time.now - t0} seconds"
       end
     end
