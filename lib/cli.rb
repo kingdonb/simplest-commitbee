@@ -20,7 +20,7 @@ class MyCLI < Thor
     $stdout.sync = true
 
     # puts "Setting scheduler to Libev"
-    puts "No scheduler, this fancy shit is causing trouble"
+    puts "(lazy scheduler, quits when sleep period is over)"
 
     # Fiber.set_scheduler Libev::Scheduler.new
     # Fiber.schedule do
