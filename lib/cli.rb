@@ -1,8 +1,11 @@
 require 'bundler/setup'
 require 'libev_scheduler'
 require "thor"
+require 'open3'
 require './lib/bee_service'
 require './lib/commit_service_v2'
+require 'active_support'
+require 'active_support/core_ext'
 # require 'pry'
 
 class MyCLI < Thor
@@ -52,8 +55,24 @@ class MyCLI < Thor
         json_filename: 'simplest-commitsto.json' )
     end
 
+    def show_errors!(err:, status:)
+      if err.present? || status != 0
+        puts "Errors:"
+        if err.present?
+          puts; puts err
+          puts "(exit status: #{status})"
+        else
+          puts "None (exit status: #{status})"
+        end
+        Kernel.exit(status)
+      end
+    end
+
     def do_update
-      `./README`
+      stdout, stderr, status = Open3.capture3("./README")
+      puts stdout
+      show_errors!(err: stderr, status: status)
+
       init_bee
       @user.update(beeminder)
     end
@@ -63,4 +82,4 @@ class MyCLI < Thor
     end
   #
 end
- 
+

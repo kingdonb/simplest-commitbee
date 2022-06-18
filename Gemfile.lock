@@ -43,6 +43,7 @@ GEM
     mime-types-data (3.2022.0105)
     minitest (5.16.0)
     netrc (0.11.0)
+    open3 (0.1.1)
     optimist (3.0.1)
     public_suffix (4.0.6)
     rest-client (2.1.0)
@@ -88,6 +89,7 @@ DEPENDENCIES
   awesome_print
   beeminder!
   libev_scheduler
+  open3
   rest-client
   rspec (~> 3.0)
   rspec_junit_formatter
