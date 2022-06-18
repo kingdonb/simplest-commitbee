@@ -16,7 +16,6 @@ class MyCLI < Thor
   def sync(name: "kb")
     @user ||= commit_factory(username:name)
 
-    $stdout.sync = true
     Fiber.set_scheduler ::Libev::Scheduler.new
     Fiber.schedule do
       while do_update
@@ -69,6 +68,7 @@ class MyCLI < Thor
     end
 
     def do_update
+      $stdout.sync = true
       stdout, stderr, status = Open3.capture3("./README")
       puts stdout
       show_errors!(err: stderr, status: status)
