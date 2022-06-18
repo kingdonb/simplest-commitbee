@@ -37,7 +37,7 @@ class MyCLI < Thor
       end
     end
 
-    puts "Fiber scheduled at #{Time.now} (control returns to the scheduler)"
+    puts "MyCLI::sync scheduled Fibers at #{Time.now}" # + " and yields to libev"
   end
 
   no_commands {
