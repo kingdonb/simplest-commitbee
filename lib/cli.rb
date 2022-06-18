@@ -1,3 +1,5 @@
+require 'bundler/setup'
+require 'libev_scheduler'
 require "thor"
 require './lib/bee_service'
 require './lib/commit_service_v2'
@@ -14,7 +16,7 @@ class MyCLI < Thor
     Fiber.set_scheduler ::Libev::Scheduler.new
     Fiber.schedule do
       while do_update
-        puts "ran the update, sleeping now"
+        puts "ran the updater, sleeping now"
         t0 = Time.now
         sleep 14400 # 4*60*60
         puts "woke up after #{Time.now - t0} seconds"
@@ -44,6 +46,7 @@ class MyCLI < Thor
     end
 
     def do_update
+      `./README`
       @user.update(beeminder)
     end
 

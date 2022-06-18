@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-BE='bundle exec'
-RU='rvm'
+# BE='bundle exec'
+# RU='rvm'
 
-RVM_ENVIR=/etc/profile.d/rvm.sh
-RUBY_VERS=`cat .ruby-version`
+# RVM_ENVIR=/etc/profile.d/rvm.sh
+# RUBY_VERS=`cat .ruby-version`
 
 # This should be a "do-more" goal with kyoom enabled (default settings)
    API="https://www.beeminder.com/api/v1"
@@ -15,9 +15,9 @@ RUBY_VERS=`cat .ruby-version`
 
 curl -s "$API/users/$USER/$JSON?$TOKEN" > "${GOAL}.json"
 
- .  $RVM_ENVIR
-$RU $RUBY_VERS
-$BE ruby ./cli sync
+#  .  $RVM_ENVIR
+# $RU $RUBY_VERS
+# $BE ruby ./cli sync
 
 # deis_token(){ cat ~/.deis/client.json |jq .token -r ; }
 # curl https://deis.xyz/v2/apps/simplest-commitbee/builds/ -H "Authorization: token $(deis_token)"
