@@ -20,8 +20,8 @@ class MyCLI < Thor
     puts "Setting scheduler to Libev"
 
     Fiber.set_scheduler ::Libev::Scheduler.new
-    while do_update
-      Fiber.schedule do
+    Fiber.schedule do
+      while do_update
         puts "ran the updater, sleeping now"
         $stdout.flush
         t0 = Time.now
@@ -31,6 +31,7 @@ class MyCLI < Thor
         $stdout.flush
       end
 
+      # Fiber should never finish
       puts "Fiber finished at #{Time.now}"
     end
 
