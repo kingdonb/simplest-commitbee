@@ -68,6 +68,7 @@ class MyCLI < Thor
     end
 
     def show_errors!(err:, status:)
+      puts "checking for errors"
       if err.present? || status != 0
         puts "Errors:"
         if err.present?
