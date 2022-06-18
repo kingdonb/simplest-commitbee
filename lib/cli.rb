@@ -1,9 +1,6 @@
 require 'bundler/setup'
-# require 'libev_scheduler'
+require 'libev_scheduler'
 require "thor"
-# require 'tty-command'
-# require 'byebug'
-# require "ostruct"
 require './lib/bee_service'
 require './lib/commit_service_v2'
 require 'active_support'
@@ -19,27 +16,20 @@ class MyCLI < Thor
     @user ||= commit_factory(username:name)
     $stdout.sync = true
 
-    # puts "Setting scheduler to Libev"
-    puts "(lazy scheduler, quits when sleep period is over)"
+    puts "calling do_update" # (the activity that runs periodically)
+    do_update
 
-    # Fiber.set_scheduler Libev::Scheduler.new
-    # Fiber.schedule do
-      puts "scheduled activity"
-      # loop do
-        puts "looping again"
-        do_update
-        puts "ran the updater, sleeping now"
-        t0 = Time.now
+    puts "calling Fiber.schedule"
+    Fiber.schedule do
+      puts "ran the updater, sleeping now"
+      t0 = Time.now
 
-        sleep 100 # 4*60*60
-        puts "woke up after #{Time.now - t0} seconds"
-      # end
+      sleep 14400 # 4*60*60
+      puts "woke up after #{Time.now - t0} seconds"
+      self.sync # calling sync again, so this can be a loop
+    end
 
-      # Fiber should never finish
-      puts "Fiber finished at #{Time.now}"
-    # end
-
-    puts "scheduled"
+    puts "Fiber scheduled at #{Time.now}"
   end
 
   no_commands {
@@ -62,7 +52,7 @@ class MyCLI < Thor
     end
 
     def init_bee
-      @beeminder = BeeService.new(
+      @beeminder ||= BeeService.new(
         username: @username,
         access_token: @token,
         json_filename: 'simplest-commitsto.json' )
@@ -83,34 +73,18 @@ class MyCLI < Thor
     end
 
     def do_update
-      begin
-        api="https://www.beeminder.com/api/v1"
-        goal="simplest-commitsto"
-        json="goals/#{goal}/datapoints.json"
-        username="#{@username}"
-        token="auth_token=#{@token}"
-
-        uristr = "#{api}/users/#{username}/#{json}?#{token}"
-        uri = URI.parse(uristr)
-        response = Net::HTTP.get_response(uri)
-        puts "response is fetched"
-        # response = OpenStruct.new(body: "foo")
-
-        File.open("#{goal}.json", 'w') do |file|
-          file.write(response.body)
-        end
-
-        puts "Wrote #{goal}.json"
-
-        # show_errors!(err: cmd.err, status: cmd.status)
-      end
-      # puts cmd.out
+      # turns out Fiber.scheduler messes with Net::HTTP
+      # (maybe because it's supposed to be non-blocking?)
+      # The old standby shell-out still works here though!
+      `./README`
 
       init_bee
       @user.update(beeminder)
     end
 
     def self.start(args)
+      puts "Setting scheduler to Libev"
+      Fiber.set_scheduler Libev::Scheduler.new
       super(args)
     end
   #
