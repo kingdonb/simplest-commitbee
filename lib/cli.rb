@@ -11,7 +11,16 @@ class MyCLI < Thor
   def sync(name: "kb")
     @user ||= commit_factory(username:name)
 
-    @user.update(beeminder)
+    Fiber.set_scheduler Libev::Scheduler.new
+    Fiber.schedule do
+      while do_update
+        puts "ran the update, sleeping now"
+        t0 = Time.now
+        sleep 14400 # 4*60*60
+        puts "woke up after #{Time.now - t0} seconds"
+      end
+    end
+
   end
 
   no_commands {
@@ -32,6 +41,10 @@ class MyCLI < Thor
   private
     def commit_factory(username:)
       commitsto.new(username)
+    end
+
+    def do_update
+      @user.update(beeminder)
     end
 
     def self.start(args)
