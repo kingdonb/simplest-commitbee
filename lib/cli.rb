@@ -1,10 +1,6 @@
 require 'bundler/setup'
 require 'libev_scheduler'
 require "thor"
-# require 'tty-command'
-# require 'byebug'
-# require "ostruct"
-# require 'faraday'
 require './lib/bee_service'
 require './lib/commit_service_v2'
 require 'active_support'
@@ -20,22 +16,20 @@ class MyCLI < Thor
     @user ||= commit_factory(username:name)
     $stdout.sync = true
 
-    puts "Setting scheduler to Libev"
-    # puts "(lazy scheduler, quits when sleep period is over)"
-
-    puts "scheduled activity"
+    puts "calling do_update" # (the activity that runs periodically)
     do_update
-      puts "looping again"
-      Fiber.schedule do
-        puts "ran the updater, sleeping now"
-        t0 = Time.now
 
-        sleep 15 # 4*60*60
-        puts "woke up after #{Time.now - t0} seconds"
-        self.sync # calling sync again
-      end
+    puts "calling Fiber.schedule"
+    Fiber.schedule do
+      puts "ran the updater, sleeping now"
+      t0 = Time.now
 
-      puts "Fiber scheduled at #{Time.now}"
+      sleep 14400 # 4*60*60
+      puts "woke up after #{Time.now - t0} seconds"
+      self.sync # calling sync again, so this can be a loop
+    end
+
+    puts "Fiber scheduled at #{Time.now}"
   end
 
   no_commands {
@@ -58,7 +52,7 @@ class MyCLI < Thor
     end
 
     def init_bee
-      @beeminder = BeeService.new(
+      @beeminder ||= BeeService.new(
         username: @username,
         access_token: @token,
         json_filename: 'simplest-commitsto.json' )
@@ -79,28 +73,9 @@ class MyCLI < Thor
     end
 
     def do_update
-      ## begin
-      #  api="https://www.beeminder.com/api/v1"
-      #  goal="simplest-commitsto"
-      #  json="goals/#{goal}/datapoints.json"
-      #  username="#{@username}"
-      #  # token="auth_token=#{@token}"
-
-      #  uristr = "#{api}/users/#{username}/#{json}"
-      #  response = Faraday.get(uristr, {auth_token: @token}, {'Accept' => 'application/json'})
-      #  puts "response is fetched"
-      #  # response = OpenStruct.new(body: "foo")
-
-      #  File.open("#{goal}.json", 'w') do |file|
-      #    file.write(response.body)
-      #  end
-
-      #  puts "Wrote #{goal}.json"
-
-      #  # show_errors!(err: cmd.err, status: cmd.status)
-      ## end
-      ## puts cmd.out
-
+      # turns out Fiber.scheduler messes with Net::HTTP
+      # (maybe because it's supposed to be non-blocking?)
+      # The old standby shell-out still works here though!
       `./README`
 
       init_bee
@@ -108,6 +83,7 @@ class MyCLI < Thor
     end
 
     def self.start(args)
+      puts "Setting scheduler to Libev"
       Fiber.set_scheduler Libev::Scheduler.new
       super(args)
     end
