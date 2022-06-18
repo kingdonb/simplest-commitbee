@@ -21,7 +21,8 @@ class MyCLI < Thor
 
     Fiber.set_scheduler ::Libev::Scheduler.new
     Fiber.schedule do
-      while do_update
+      loop do
+        do_update
         puts "ran the updater, sleeping now"
         $stdout.flush
         t0 = Time.now
