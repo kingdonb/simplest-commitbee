@@ -45,6 +45,7 @@ GEM
     netrc (0.11.0)
     optimist (3.0.1)
     public_suffix (4.0.6)
+    rake (13.0.6)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
       http-cookie (>= 1.0.2, < 2.0)
@@ -88,6 +89,7 @@ DEPENDENCIES
   awesome_print
   beeminder!
   libev_scheduler
+  rake
   rest-client
   rspec (~> 3.0)
   rspec_junit_formatter
