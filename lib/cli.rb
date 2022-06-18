@@ -23,9 +23,12 @@ class MyCLI < Thor
     Fiber.schedule do
       while do_update
         puts "ran the updater, sleeping now"
+        $stdout.flush
         t0 = Time.now
+
         sleep 14400 # 4*60*60
         puts "woke up after #{Time.now - t0} seconds"
+        $stdout.flush
       end
     end
 
@@ -63,8 +66,10 @@ class MyCLI < Thor
         if err.present?
           puts; puts err
           puts "(exit status: #{status})"
+          $stdout.flush
         else
           puts "None (exit status: #{status})"
+          $stdout.flush
         end
         Kernel.exit(status)
       end
@@ -74,6 +79,7 @@ class MyCLI < Thor
       $stdout.sync = true
       stdout, stderr, status = Open3.capture3("./README")
       puts stdout
+      $stdout.flush
       show_errors!(err: stderr, status: status)
 
       init_bee
