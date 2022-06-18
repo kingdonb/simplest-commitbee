@@ -24,7 +24,7 @@ class MyCLI < Thor
         puts "ran the updater, sleeping now"
         t0 = Time.now
 
-        sleep 40 # 4*60*60
+        sleep 14400 # 4*60*60
         puts "updater running again after #{Time.now - t0} seconds"
       end
     end
@@ -32,7 +32,7 @@ class MyCLI < Thor
     Fiber.schedule do
       loop do
         t0 = Time.now
-        sleep 60 # * 60
+        sleep 60 * 60
         how_long = (Time.now - t0) / 60.0
         puts "heartbeat every #{how_long.round}m"
       end
