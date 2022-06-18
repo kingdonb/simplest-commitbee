@@ -27,7 +27,7 @@ class MyCLI < Thor
         $stdout.flush
         t0 = Time.now
 
-        sleep 14400 # 4*60*60
+        sleep 100 # 4*60*60
         puts "woke up after #{Time.now - t0} seconds"
         $stdout.flush
       end
