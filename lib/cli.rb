@@ -25,11 +25,20 @@ class MyCLI < Thor
         t0 = Time.now
 
         sleep 14400 # 4*60*60
-        puts "woke up after #{Time.now - t0} seconds"
+        puts "updater running again after #{Time.now - t0} seconds"
       end
     end
 
-    puts "Fiber scheduled at #{Time.now} (control returns to the scheduler)"
+    Fiber.schedule do
+      loop do
+        t0 = Time.now
+        sleep 60 * 60
+        how_long = (Time.now - t0) / 60.0
+        puts "heartbeat every #{how_long.round}m"
+      end
+    end
+
+    puts "MyCLI::sync scheduled Fibers at #{Time.now}" # + " and yields to libev"
   end
 
   no_commands {
