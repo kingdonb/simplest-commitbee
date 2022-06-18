@@ -29,6 +29,15 @@ class MyCLI < Thor
       end
     end
 
+    Fiber.schedule do
+      loop do
+        puts "this one runs every 15s"
+        t0 = Time.now
+        sleep 15
+        puts "woke up after #{Time.now - t0} seconds"
+      end
+    end
+
     puts "Fiber scheduled at #{Time.now} (control returns to the scheduler)"
   end
 
