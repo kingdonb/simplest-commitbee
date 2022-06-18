@@ -1,7 +1,9 @@
 require 'bundler/setup'
-require 'libev_scheduler'
+# require 'libev_scheduler'
 require "thor"
-require 'open3'
+# require 'tty-command'
+# require 'byebug'
+# require "ostruct"
 require './lib/bee_service'
 require './lib/commit_service_v2'
 require 'active_support'
@@ -16,27 +18,25 @@ class MyCLI < Thor
   def sync(name: "kb")
     @user ||= commit_factory(username:name)
 
-    $stdout.sync = true
-    puts "Setting scheduler to Libev"
+    # puts "Setting scheduler to Libev"
+    puts "No scheduler, this fancy shit is causing trouble"
 
-    Fiber.set_scheduler Libev::Scheduler.new
-    Fiber.schedule do
+    # Fiber.set_scheduler Libev::Scheduler.new
+    # Fiber.schedule do
       puts "scheduled activity"
-      loop do
+      # loop do
         puts "looping again"
         do_update
         puts "ran the updater, sleeping now"
-        $stdout.flush
         t0 = Time.now
 
         sleep 100 # 4*60*60
         puts "woke up after #{Time.now - t0} seconds"
-        $stdout.flush
-      end
+      # end
 
       # Fiber should never finish
       puts "Fiber finished at #{Time.now}"
-    end
+    # end
 
     puts "scheduled"
   end
@@ -74,22 +74,36 @@ class MyCLI < Thor
         if err.present?
           puts; puts err
           puts "(exit status: #{status})"
-          $stdout.flush
         else
           puts "None (exit status: #{status})"
-          $stdout.flush
         end
         Kernel.exit(status)
       end
     end
 
     def do_update
-      $stdout.sync = true
-      puts "handing over to capture3"
-      stdout, stderr, status = Open3.capture3("./README", :binmode=>true)
-      puts stdout
-      $stdout.flush
-      show_errors!(err: stderr, status: status)
+      begin
+        api="https://www.beeminder.com/api/v1"
+        goal="simplest-commitsto"
+        json="goals/#{goal}/datapoints.json"
+        username="#{@username}"
+        token="auth_token=#{@token}"
+
+        uristr = "#{api}/users/#{username}/#{json}?#{token}"
+        uri = URI.parse(uristr)
+        response = Net::HTTP.get_response(uri)
+        puts "response is fetched"
+        # response = OpenStruct.new(body: "foo")
+
+        File.open("#{goal}.json", 'w') do |file|
+          file.write(response.body)
+        end
+
+        puts "Wrote #{goal}.json"
+
+        # show_errors!(err: cmd.err, status: cmd.status)
+      end
+      # puts cmd.out
 
       init_bee
       @user.update(beeminder)
