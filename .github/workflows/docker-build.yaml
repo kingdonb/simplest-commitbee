@@ -10,17 +10,22 @@ on:
 
 jobs:
   docker:
+    env:
+      IMAGE: kingdonb/simplest-commitbee
     runs-on: ubuntu-latest
     steps:
       - name: Prepare
         id: prep
         run: |
+          branch=${GITHUB_REF##*/}
+          ts=$(date +%s)
           VERSION=${GITHUB_SHA::8}
+          BUILD_ID="${branch}-${VERSION}-${ts}"
           if [[ $GITHUB_REF == refs/tags/* ]]; then
-            VERSION=${GITHUB_REF/refs\/tags\//}
+            BUILD_ID=${GITHUB_REF/refs\/tags\//}
           fi
           echo ::set-output name=BUILD_DATE::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-          echo ::set-output name=VERSION::${VERSION}          
+          echo ::set-output name=BUILD_ID::${BUILD_ID}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -39,7 +44,9 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: kingdonb/simplest-commitbee:${{ steps.prep.outputs.VERSION }}
+          tags: |
+            ${{ env.IMAGE}}:${{ steps.prep.outputs.BUILD_ID }}
+            ${{ env.IMAGE}}:latest
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
