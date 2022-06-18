@@ -30,6 +30,8 @@ class MyCLI < Thor
         puts "woke up after #{Time.now - t0} seconds"
         $stdout.flush
       end
+
+      puts "Fiber finished at #{Time.now}"
     end
 
   end
