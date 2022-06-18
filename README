@@ -15,6 +15,8 @@
 
 curl -s "$API/users/$USER/$JSON?$TOKEN" > "${GOAL}.json"
 
+echo "Fetched ${GOAL}.json"
+
 #  .  $RVM_ENVIR
 # $RU $RUBY_VERS
 # $BE ruby ./cli sync
