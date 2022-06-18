@@ -16,20 +16,20 @@ class MyCLI < Thor
     @user ||= commit_factory(username:name)
     $stdout.sync = true
 
-    puts "calling do_update" # (the activity that runs periodically)
-    do_update
-
-    puts "calling Fiber.schedule"
+    puts "calling Fiber.schedule for do_update loop"
     Fiber.schedule do
-      puts "ran the updater, sleeping now"
-      t0 = Time.now
+      loop do
+        do_update
 
-      sleep 14400 # 4*60*60
-      puts "woke up after #{Time.now - t0} seconds"
-      self.sync # calling sync again, so this can be a loop
+        puts "ran the updater, sleeping now"
+        t0 = Time.now
+
+        sleep 14400 # 4*60*60
+        puts "woke up after #{Time.now - t0} seconds"
+      end
     end
 
-    puts "Fiber scheduled at #{Time.now}"
+    puts "Fiber scheduled at #{Time.now} (control returns to the scheduler)"
   end
 
   no_commands {
