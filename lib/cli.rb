@@ -86,7 +86,7 @@ class MyCLI < Thor
     def do_update
       $stdout.sync = true
       puts "handing over to capture3"
-      stdout, stderr, status = Open3.capture3("./README")
+      stdout, stderr, status = Open3.capture3("./README", :binmode=>true)
       puts stdout
       $stdout.flush
       show_errors!(err: stderr, status: status)
