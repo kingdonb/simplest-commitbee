@@ -16,6 +16,9 @@ class MyCLI < Thor
   def sync(name: "kb")
     @user ||= commit_factory(username:name)
 
+    $stdout.sync = true
+    puts "Setting scheduler to Libev"
+
     Fiber.set_scheduler ::Libev::Scheduler.new
     Fiber.schedule do
       while do_update
