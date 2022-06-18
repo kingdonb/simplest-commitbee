@@ -17,6 +17,7 @@ class MyCLI < Thor
   desc "sync COMMITSTO_USER", "add data points from COMMITSTO_USER (default: 'kb')"
   def sync(name: "kb")
     @user ||= commit_factory(username:name)
+    $stdout.sync = true
 
     # puts "Setting scheduler to Libev"
     puts "No scheduler, this fancy shit is causing trouble"
