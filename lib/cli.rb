@@ -87,8 +87,13 @@ class MyCLI < Thor
       # The old standby shell-out still works here though!
       `./README`
 
-      init_bee
+      hit_up_beeminder_json
       @user.update(beeminder)
+    end
+
+    def hit_up_beeminder_json
+      @bee_service = init_bee
+      @bee_service.do_lifting unless @bee_service.fresh_json_data?
     end
 
     def self.start(args)
