@@ -10,7 +10,16 @@ class BeeService
     @username = username
     @access_token = access_token
     @json_filename = json_filename
+
+    do_lifting
+  end
+
+  def do_lifting
+    @json = nil
+    @json_data = nil
+
     @json_data = File.read(json_filename)
+    @last_read = Time.now
 
     validate_json
   end
@@ -55,7 +64,17 @@ class BeeService
     `#{cmd}`
   end
 
+  def fresh_read?
+    Time.now - @last_read < 10
+  end
+
   private
+    # JSON is considered fresh if it has an mtime in 10 seconds recent history
+    def fresh_json_data?
+      mtime = File.mtime(json_filename)
+      Time.now - mtime < 10
+    end
+
     def validate_json
       if json.class.to_s == "Hash"
         status = json["status"]
@@ -75,12 +94,6 @@ class BeeService
     end
     def json
       @json ||= JSON.parse(json_data)
-    end
-
-    # JSON is considered fresh if it has an mtime in 10 seconds recent history
-    def fresh_json_data?
-      mtime = File.mtime(json_filename)
-      Time.now - mtime < 10
     end
 
     def comment_matcher
