@@ -87,8 +87,13 @@ class MyCLI < Thor
       # The old standby shell-out still works here though!
       `./README`
 
+      hit_up_commitsto_api
       hit_up_beeminder_json
       @user.update(beeminder)
+    end
+
+    def hit_up_commitsto_api
+      set_user(username: 'kb')
     end
 
     def hit_up_beeminder_json
