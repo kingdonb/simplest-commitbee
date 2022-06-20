@@ -1,5 +1,5 @@
 require 'bundler/setup'
-require 'libev_scheduler'
+require 'fiber_scheduler'
 require "thor"
 require './lib/bee_service'
 require './lib/commit_service_v2'
@@ -102,8 +102,8 @@ class MyCLI < Thor
     end
 
     def self.start(args)
-      puts "Setting scheduler to Libev"
-      Fiber.set_scheduler Libev::Scheduler.new
+      puts "Setting scheduler to bruno-/fiber_scheduler"
+      Fiber.set_scheduler(FiberScheduler.new)
       super(args)
     end
   #
