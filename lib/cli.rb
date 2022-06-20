@@ -93,7 +93,7 @@ class MyCLI < Thor
 
     def hit_up_beeminder_json
       @bee_service = init_bee
-      @bee_service.do_lifting unless @bee_service.fresh_json_data?
+      @bee_service.do_lifting unless @bee_service.fresh_read?
     end
 
     def self.start(args)
