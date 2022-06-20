@@ -8,16 +8,28 @@ class CommitServiceV2
   attr_reader :username, :data, :bee
   def initialize(username)
     @username = username
-    @data = JSON.parse(RestClient.get(promises_url))
+    @data = nil
   end
   def update(bee)
     @bee = bee
 
+    do_lifting
     add_any_untracked_promises
     add_any_newly_completed_promises
   end
 
   private
+    def do_lifting
+      `./README-commitsto`
+      @data = nil
+
+      hit_up_commitsto_api
+    end
+
+    def hit_up_commitsto_api
+      @data ||= JSON.parse(File.read('promises.json'))
+    end
+
     def promises_url
       "http://commits.to/api/v1/user/promises?username=#{username}"
     end

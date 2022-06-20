@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+   API="http://commits.to/api/v1"
+  FILE="promises"
+  #GOAL="simplest-commitsto"
+  JSON="user/promises"
+  USER="kb" # ${COMMITSTO_USERNAME}
+  #TOKEN="auth_token=${BEE_AUTH_TOKEN}"
+
+curl -s "$API/$JSON?username=$USER" > "${FILE}.json"
+
+echo "Fetched ${FILE}.json"
+
+exit 0
