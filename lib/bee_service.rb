@@ -25,6 +25,7 @@ class BeeService
 
     @json_data = File.read(json_filename)
     @last_read = Time.now
+    binding.break
 
     validate_json
   end
