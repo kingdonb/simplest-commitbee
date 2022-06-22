@@ -37,6 +37,9 @@ dev:
   simplest-commitbee:
     image: kingdonb/simplest-commitbee:okteto
     command: bash --login
+    environment:
+      BEEMINDER_USERNAME: YOUR_BEEMINDER_USERNAME
+      BEE_AUTH_TOKEN: 1234567890abcdefghij
     securityContext:
       runAsUser: 999
       runAsGroup: 1000
