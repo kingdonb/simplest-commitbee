@@ -15,14 +15,10 @@ gem 'rest-client'
 gem 'webmock'
 # gem 'pry'
 # gem 'ruby-debug-ide'
+gem 'debug'
 
-def os_is(re)
-  RbConfig::CONFIG['host_os'] =~ re
-end
 
-## Select a debase version for your OS when using ruby-debug-ide
-# gem 'debase', '~> 0.2.5.beta2', platforms: :ruby, install_if: os_is(/linux/)
-# gem 'debase', '~> 0.2.4', platforms: :ruby, install_if: os_is(/darwin/)
+
 
 gem 'fiber_scheduler'
 # gem 'faraday'

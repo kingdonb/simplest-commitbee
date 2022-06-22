@@ -2,13 +2,29 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "rdbg",
+            "name": "Attach with rdbg",
+            "request": "attach",
+            "debugPort": "12345",
+            "cwd": "/home/rvm/simplest-commitbee",
+            "localfs": false
+        },
+        {
             "name": "Connect to okteto",
             "type": "Ruby",
             "request": "attach",
             "remotePort": "1234",
             "remoteHost": "localhost",
             "remoteWorkspaceRoot": "/home/rvm/simplest-commitbee",
-            "cwd": "${workspaceRoot}",
+            "cwd": "${workspaceRoot}"
+        },
+        {
+            "type": "rdbg",
+            "name": "Debug current file with rdbg",
+            "request": "launch",
+            "script": "${file}",
+            "args": [],
+            "askParameters": true
         }
     ]
 }

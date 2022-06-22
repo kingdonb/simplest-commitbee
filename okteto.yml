@@ -50,7 +50,7 @@ dev:
     sync:
       - .:/home/rvm/simplest-commitbee
     forward:
-      - 1234:1234
+      - 12345:12345
       - 8080:8080
     autocreate: true
     volumes:

@@ -29,6 +29,9 @@ WORKDIR ${APPDIR}
 # RVM_USER is permitted to create files
 RUN chown ${RVM_USER} ${APPDIR}
 RUN chsh ${RVM_USER} -s /usr/bin/bash
+ENV WORKSPACE_DIR=/Users/kingdonb/projects/personal
+RUN mkdir -p ${WORKSPACE_DIR} && \
+  ln -s /home/${RVM_USER}/simplest-commitbee  ${WORKSPACE_DIR}
 USER ${RVM_USER}
 ENV RUBY=3.1.2
 
