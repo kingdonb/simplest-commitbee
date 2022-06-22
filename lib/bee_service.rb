@@ -18,6 +18,11 @@ class BeeService
     @json = nil
     @json_data = nil
 
+    @all_matched_comments = nil
+    @all_matched_tuples = nil
+    @promise_slugs = nil
+    @completed_slugs = nil
+
     @json_data = File.read(json_filename)
     @last_read = Time.now
 
