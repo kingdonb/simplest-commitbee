@@ -33,7 +33,7 @@ ENV WORKSPACE_DIR=/Users/kingdonb/projects/personal
 RUN mkdir -p ${WORKSPACE_DIR} && \
   ln -s /home/${RVM_USER}/simplest-commitbee  ${WORKSPACE_DIR}
 USER ${RVM_USER}
-ENV RUBY=3.1.2
+# ENV RUBY=3.1.2
 
 # include the ruby-version and Gemfile for bundle install
 ADD --chown=rvm Gemfile Gemfile.lock .ruby-version ${APPDIR}/
