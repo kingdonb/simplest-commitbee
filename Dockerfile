@@ -28,15 +28,17 @@ WORKDIR ${APPDIR}
 # RUN chown ${RVM_USER} ${APPDIR}/${STATE} ${APPDIR}
 # RVM_USER is permitted to create files
 RUN chown ${RVM_USER} ${APPDIR}
+RUN chsh ${RVM_USER} -s /usr/bin/bash
 USER ${RVM_USER}
 ENV RUBY=3.1.2
 
 # include the ruby-version and Gemfile for bundle install
-ADD Gemfile Gemfile.lock .ruby-version ${APPDIR}/
+ADD --chown=rvm Gemfile Gemfile.lock .ruby-version ${APPDIR}/
+
 RUN  bash --login -c 'bundle install'
+ADD --chown=rvm .   ${APPDIR}
 
 # include the app source code
-ADD .   ${APPDIR}
 # web.rb for default health checking on Proctype "cmd"
 CMD  bash --login -c 'bundle exec ruby ./web.rb'
 EXPOSE 5000
