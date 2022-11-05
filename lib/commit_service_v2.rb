@@ -98,7 +98,7 @@ class CommitServiceV2
       if selected_date.present?
         # selected_date = DateTime.parse(selected_date).in_time_zone(Time.now.getlocal.zone).to_date
 
-        selected_date = DateTime.parse(selected_date).in_time_zone('America/Eastern').to_date
+        selected_date = DateTime.parse(selected_date).in_time_zone('US/Eastern').to_date
 
         # binding.pry
       # else
