@@ -10,7 +10,7 @@ require 'socket'
 scheduler = FiberScheduler.new
 Fiber.set_scheduler scheduler
 
-server = TCPServer.new('localhost', 5000)
+server = TCPServer.new('0.0.0.0', 5000)
 
 Fiber.schedule do
   loop do
