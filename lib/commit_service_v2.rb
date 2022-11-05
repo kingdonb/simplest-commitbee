@@ -96,7 +96,10 @@ class CommitServiceV2
     def promise_to_slug_and_date_field_value_tuple(promise, selector)
       selected_date = promise[selector]
       if selected_date.present?
-        selected_date = DateTime.parse(selected_date).in_time_zone(Time.now.getlocal.zone).to_date
+        # selected_date = DateTime.parse(selected_date).in_time_zone(Time.now.getlocal.zone).to_date
+
+        selected_date = DateTime.parse(selected_date).in_time_zone('America/Eastern').to_date
+
         # binding.pry
       # else
       #   binding.pry
