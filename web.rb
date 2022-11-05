@@ -3,11 +3,11 @@
 # with some modifications
 
 require 'bundler/setup'
-require 'libev_scheduler'
+require 'fiber_scheduler'
 
 require 'socket'
 
-scheduler = Libev::Scheduler.new
+scheduler = FiberScheduler.new
 Fiber.set_scheduler scheduler
 
 server = TCPServer.new('localhost', 5000)
