@@ -18,7 +18,7 @@ Fiber.schedule do
     client = server.accept
     p client: client
 
-    Fiber.schedule do
+    Fiber.schedule(:waiting) do
       begin
         client.recv(1024)
         client.send("HTTP/1.1 200 Ok\r\nContent-Type: application/json\r\nConnection: close\r\n\r\n",0)
