@@ -1,5 +1,5 @@
 ARG RVM_RUBY_VERSIONS="3.2.1"
-FROM kingdonb/docker-rvm:20220220
+FROM kingdonb/docker-rvm:20230220
 LABEL maintainer="Kingdon Barrett <kingdon@weave.works>"
 ENV APPDIR="/home/${RVM_USER}/simplest-commitbee"
 # ENV SCHEMA="sqlite.schema"
