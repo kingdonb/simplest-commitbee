@@ -1,0 +1,11 @@
+image:
+  repository: kingdonb/simplest-commitbee
+  tag: canary
+
+ports:
+  - name: http
+    containerPort: 5000
+    protocol: TCP
+
+ingress:
+  enabled: true
