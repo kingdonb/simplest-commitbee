@@ -23,7 +23,7 @@ GEM
       public_suffix (>= 2.0.2, < 6.0)
     awesome_print (1.9.2)
     chronic (0.10.2)
-    concurrent-ruby (1.2.0)
+    concurrent-ruby (1.2.2)
     crack (0.4.5)
       rexml
     diff-lcs (1.5.0)
