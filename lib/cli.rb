@@ -17,7 +17,7 @@ class MyCLI < Thor
     $stdout.sync = true
 
     puts "calling Fiber.schedule for do_update loop"
-    Fiber.schedule(:waiting) do
+    Fiber.schedule do
       loop do
         do_update
 
