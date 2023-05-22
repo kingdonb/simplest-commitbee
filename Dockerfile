@@ -29,7 +29,7 @@ WORKDIR ${APPDIR}
 # RVM_USER is permitted to create files
 RUN chown ${RVM_USER} ${APPDIR}
 USER ${RVM_USER}
-ENV RUBY=3.1.3
+ENV RUBY=3.1.4
 
 # include the ruby-version and Gemfile for bundle install
 ADD Gemfile Gemfile.lock .ruby-version ${APPDIR}/
